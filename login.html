@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Signup</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://static.vecteezy.com/system/resources/previews/002/917/822/original/set-of-female-maid-or-housekeeper-in-cartoon-characters-free-vector.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+            margin: 20px;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        h2 {
+            text-align: center;
+        }
+        img {
+            width: 100px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="password"], input[type="email"], input[type="tel"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .toggle-links {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .toggle-links a {
+            text-decoration: none;
+            color: #4CAF50;
+        }
+        .toggle-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="login-container">
+    <h2>Login</h2>
+    <form action="#" method="POST">
+        <input type="text" placeholder="Username" name="username" required>
+        <input type="password" placeholder="Password" name="password" required>
+        <button type="submit">Login</button>
+    </form>
+    <div class="toggle-links">
+        <a href="javascript:void(0)" onclick="toggleForm('signup')">Don't have an account? Signup</a>
+        <a href="javascript:void(0)" onclick="toggleForm('forgot-password')">Forgot password?</a>
+    </div>
+</div>
+
+<div class="container" id="signup-container" style="display: none;">
+    <h2>Signup</h2>
+    <form action="#" method="POST" onsubmit="return validateSignupForm()">
+        <input type="text" placeholder="First Name" name="first_name" required>
+        <input type="text" placeholder="Last Name" name="last_name" required>
+        <input type="text" placeholder="City" name="city" required>
+        <input type="text" placeholder="State" name="state" required>
+        <input type="text" placeholder="Country" name="country" required>
+        <input type="tel" placeholder="Phone Number" name="phone" pattern="[0-9]{10}" required>
+        <input type="email" placeholder="Email ID" name="email" required>
+        <input type="password" placeholder="Password" name="password" id="password" required>
+        <input type="password" placeholder="Confirm Password" id="confirm_password" required>
+        <button type="submit">Signup</button>
+    </form>
+    <div class="toggle-links">
+        <a href="javascript:void(0)" onclick="toggleForm('login')">Already have an account? Login</a>
+    </div>
+</div>
+
+<div class="container" id="forgot-password-container" style="display: none;">
+    <h2>Forgot Password</h2>
+    <form action="#" method="POST" onsubmit="return sendOTP()">
+        <input type="tel" placeholder="Enter Registered Phone Number" name="phone" id="phone" pattern="[0-9]{10}" required>
+        <button type="submit">Send OTP</button>
+    </form>
+    <div class="toggle-links">
+        <a href="javascript:void(0)" onclick="toggleForm('login')">Back to Login</a>
+    </div>
+</div>
+
+<script>
+    function toggleForm(form) {
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('signup-container').style.display = 'none';
+        document.getElementById('forgot-password-container').style.display = 'none';
+        document.getElementById(form + '-container').style.display = 'block';
+    }
+    
+    function validateSignupForm() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
+        
+        if (!passwordPattern.test(password)) {
+            alert("Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, and a special character.");
+            return false;
+        }
+        
+        if (password !== confirmPassword) {
+            alert("Passwords do not match.");
+            return false;
+        }
+        
+        return true;
+    }
+    
+    function sendOTP() {
+        alert("OTP sent to registered phone number.");
+        toggleForm('otp');
+        return false;
+    }
+    
+    function verifyOTP() {
+        alert("OTP verified successfully.");
+        toggleForm('reset-password');
+        return false;
+    }
+</script>
+</body>
+</html>
