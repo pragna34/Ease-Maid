@@ -28,12 +28,7 @@
         h2 {
             text-align: center;
         }
-        img {
-            width: 100px;
-            height: auto;
-            margin-bottom: 20px;
-        }
-        input[type="text"], input[type="password"], input[type="email"], input[type="tel"] {
+        input[type="text"], input[type="password"], input[type="email"] {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -90,7 +85,6 @@
         <input type="text" placeholder="City" name="city" required>
         <input type="text" placeholder="State" name="state" required>
         <input type="text" placeholder="Country" name="country" required>
-        <input type="tel" placeholder="Phone Number" name="phone" pattern="[0-9]{10}" required>
         <input type="email" placeholder="Email ID" name="email" required>
         <input type="password" placeholder="Password" name="password" id="password" required>
         <input type="password" placeholder="Confirm Password" id="confirm_password" required>
@@ -102,11 +96,13 @@
 </div>
 
 <div class="container" id="forgot-password-container" style="display: none;">
-    <h2>Forgot Password</h2>
-    <form action="#" method="POST" onsubmit="return sendOTP()">
-        <input type="tel" placeholder="Enter Registered Phone Number" name="phone" id="phone" pattern="[0-9]{10}" required>
-        <button type="submit">Send OTP</button>
+    <h2>Reset Password</h2>
+    <form action="#" method="POST">
+        <input type="password" placeholder="Enter New Password" id="new_password" required>
+        <input type="password" placeholder="Confirm New Password" id="confirm_new_password" required>
+        <button type="submit">Reset Password</button>
     </form>
+    
     <div class="toggle-links">
         <a href="javascript:void(0)" onclick="toggleForm('login')">Back to Login</a>
     </div>
@@ -119,36 +115,8 @@
         document.getElementById('forgot-password-container').style.display = 'none';
         document.getElementById(form + '-container').style.display = 'block';
     }
-    
-    function validateSignupForm() {
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirm_password').value;
-        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
-        
-        if (!passwordPattern.test(password)) {
-            alert("Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, and a special character.");
-            return false;
-        }
-        
-        if (password !== confirmPassword) {
-            alert("Passwords do not match.");
-            return false;
-        }
-        
-        return true;
-    }
-    
-    function sendOTP() {
-        alert("OTP sent to registered phone number.");
-        toggleForm('otp');
-        return false;
-    }
-    
-    function verifyOTP() {
-        alert("OTP verified successfully.");
-        toggleForm('reset-password');
-        return false;
-    }
 </script>
+
 </body>
 </html>
+
