@@ -9,34 +9,46 @@
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
-            padding: 20px;
-        }
-        .dashboard-container {
+            padding: 0;
+            height: 100vh;
             display: flex;
-            align-items: flex-start;
-            padding: 20px;
         }
-        .profile-section {
+        .sidebar {
+            width: 300px;
+            background-color: white;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-            width: 250px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
         }
         .profile-pic {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             object-fit: cover;
             border: 3px solid black;
             background: url('https://cdn-icons-png.flaticon.com/512/149/149071.png') no-repeat center;
             background-size: cover;
+            margin-bottom: 10px;
+        }
+        .bio {
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .edit-profile-btn, .logout-btn {
+            padding: 8px;
+            font-size: 14px;
+            border: 2px solid black;
+            border-radius: 5px;
+            background-color: white;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 15px;
         }
         .buttons {
-            margin-top: 20px;
             display: flex;
             flex-direction: column;
             width: 100%;
@@ -44,7 +56,7 @@
         }
         .buttons button {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             font-size: 16px;
             font-weight: bold;
             border: 2px solid black;
@@ -55,19 +67,142 @@
         .buttons button:hover {
             background-color: #ddd;
         }
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #555;
+        }
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+        }
+        .close {
+            float: right;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        input, textarea {
+            width: 90%;
+            padding: 8px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <div class="profile-section">
-            <div class="profile-pic"></div>
-            <div class="buttons">
-                <button onclick="location.href='hire_worker.html'">Hire Worker</button>
-                <button onclick="location.href='make_profile.html'">Make a Profile for Work</button>
-            </div>
+    <script>
+        // Redirect unauthorized users
+        if (localStorage.getItem("isLoggedIn") !== "true") {
+            alert("You must log in first!");
+            window.location.href = "index.html"; // Redirect to login page
+        }
+    </script>
+
+    <div class="sidebar">
+        <div class="profile-pic" id="profile-pic"></div>
+        <p class="bio" id="bio-text">No bio added</p>
+        <button class="edit-profile-btn" onclick="openModal()">Edit Profile</button>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+        <div class="buttons">
+            <button onclick="location.href='hire_worker.html'">Hire Worker</button>
+            <button onclick="location.href='make_profile.html'">Make a Profile for Work</button>
         </div>
     </div>
+    <div class="main-content">
+        Welcome to Your Dashboard
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Edit Profile</h3>
+            <input type="file" id="profileImageInput">
+            <input type="text" id="imageUrlInput" placeholder="Paste image URL from Google">
+            <textarea id="bioInput" placeholder="Enter your bio"></textarea>
+            <button onclick="saveProfile()">Save</button>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('editProfileModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('editProfileModal').style.display = 'none';
+        }
+
+        function saveProfile() {
+            // Update Bio
+            let bioText = document.getElementById('bioInput').value;
+            document.getElementById('bio-text').innerText = bioText ? bioText : "No bio added";
+            localStorage.setItem("userBio", bioText); // Save bio in local storage
+
+            // Update Profile Picture
+            let fileInput = document.getElementById('profileImageInput');
+            let urlInput = document.getElementById('imageUrlInput').value;
+            if (urlInput) {
+                document.getElementById('profile-pic').style.backgroundImage = `url(${urlInput})`;
+                localStorage.setItem("profilePic", urlInput); // Save URL in local storage
+            } else if (fileInput.files && fileInput.files[0]) {
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('profile-pic').style.backgroundImage = `url(${e.target.result})`;
+                    localStorage.setItem("profilePic", e.target.result); // Save base64 in local storage
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+
+            closeModal();
+        }
+
+        function loadProfile() {
+            let savedBio = localStorage.getItem("userBio");
+            let savedProfilePic = localStorage.getItem("profilePic");
+
+            if (savedBio) {
+                document.getElementById('bio-text').innerText = savedBio;
+            }
+
+            if (savedProfilePic) {
+                document.getElementById('profile-pic').style.backgroundImage = `url(${savedProfilePic})`;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("isLoggedIn"); // Clear login state
+            window.location.href = "index.html"; // Redirect to login page
+        }
+
+        // Load profile data on page load
+        window.onload = loadProfile;
+    </script>
 </body>
 </html>
+
+
+
+
+
 
 

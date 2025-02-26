@@ -66,9 +66,9 @@
 
 <div class="container" id="login-container">
     <h2>Login</h2>
-    <form action="#" method="POST">
-        <input type="text" placeholder="Username" name="username" required>
-        <input type="password" placeholder="Password" name="password" required>
+    <form onsubmit="return validateLogin()">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
         <button type="submit">Login</button>
     </form>
     <div class="toggle-links">
@@ -79,15 +79,15 @@
 
 <div class="container" id="signup-container" style="display: none;">
     <h2>Signup</h2>
-    <form action="#" method="POST" onsubmit="return validateSignupForm()">
-        <input type="text" placeholder="First Name" name="first_name" required>
-        <input type="text" placeholder="Last Name" name="last_name" required>
-        <input type="text" placeholder="City" name="city" required>
-        <input type="text" placeholder="State" name="state" required>
-        <input type="text" placeholder="Country" name="country" required>
-        <input type="email" placeholder="Email ID" name="email" required>
-        <input type="password" placeholder="Password" name="password" id="password" required>
-        <input type="password" placeholder="Confirm Password" id="confirm_password" required>
+    <form onsubmit="return validateSignupForm()">
+        <input type="text" placeholder="First Name" required>
+        <input type="text" placeholder="Last Name" required>
+        <input type="text" placeholder="City" required>
+        <input type="text" placeholder="State" required>
+        <input type="text" placeholder="Country" required>
+        <input type="email" placeholder="Email ID" required>
+        <input type="password" placeholder="Password" id="signup-password" required>
+        <input type="password" placeholder="Confirm Password" id="confirm-password" required>
         <button type="submit">Signup</button>
     </form>
     <div class="toggle-links">
@@ -97,12 +97,11 @@
 
 <div class="container" id="forgot-password-container" style="display: none;">
     <h2>Reset Password</h2>
-    <form action="#" method="POST">
-        <input type="password" placeholder="Enter New Password" id="new_password" required>
-        <input type="password" placeholder="Confirm New Password" id="confirm_new_password" required>
+    <form>
+        <input type="password" placeholder="Enter New Password" required>
+        <input type="password" placeholder="Confirm New Password" required>
         <button type="submit">Reset Password</button>
     </form>
-    
     <div class="toggle-links">
         <a href="javascript:void(0)" onclick="toggleForm('login')">Back to Login</a>
     </div>
@@ -115,8 +114,25 @@
         document.getElementById('forgot-password-container').style.display = 'none';
         document.getElementById(form + '-container').style.display = 'block';
     }
+
+    function validateLogin() {
+        let username = document.getElementById("username").value;
+        let password = document.getElementById("password").value;
+
+        if (username === "pragna" && password === "1234") {
+            // Store login status in localStorage
+            localStorage.setItem("isLoggedIn", "true");
+            window.location.href = "dashboard.html";
+            return false; // Prevents form from actually submitting
+        } else {
+            alert("Invalid username or password. Try again.");
+            return false;
+        }
+    }
 </script>
 
 </body>
 </html>
+
+
 
