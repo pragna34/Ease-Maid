@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hire a Worker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            display: flex;
+        }
+        .left-half {
+            width: 40%;
+            height: auto;
+            min-height: 100vh;
+            background: white;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        input, button {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .worker-list {
+            margin-top: 20px;
+        }
+        .worker-card {
+            width: 380px;
+            padding: 15px;
+            background: white;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="left-half">
+        <h2>Hire a Worker</h2>
+        <input type="text" id="workType" placeholder="Type of Work">
+        <input type="text" id="experience" placeholder="Previous Experience (e.g., 2 years)">
+        <input type="number" id="minPay" placeholder="Min Pay">
+        <input type="number" id="maxPay" placeholder="Max Pay">
+        <button onclick="searchWorkers()">Search</button>
+        
+        <div class="worker-list" id="workerList"></div>
+    </div>
+
+    <script>
+        function searchWorkers() {
+            let workType = document.getElementById("workType").value.toLowerCase();
+            let experience = document.getElementById("experience").value;
+            let minPay = document.getElementById("minPay").value;
+            let maxPay = document.getElementById("maxPay").value;
+
+            let workers = [
+                { name: "John Doe", workType: "Plumber", experience: "5 years", pay: "$30-$50/hr" },
+                { name: "Jane Smith", workType: "Electrician", experience: "3 years", pay: "$25-$45/hr" }
+            ];
+            
+            let filteredWorkers = workers.filter(worker => 
+                worker.workType.toLowerCase().includes(workType) &&
+                worker.experience.includes(experience)
+            );
+            
+            let workerList = document.getElementById("workerList");
+            workerList.innerHTML = "";
+            
+            if (filteredWorkers.length > 0) {
+                filteredWorkers.forEach(worker => {
+                    let workerCard = document.createElement("div");
+                    workerCard.classList.add("worker-card");
+                    workerCard.innerHTML = `
+                        <p><strong>${worker.name}</strong></p>
+                        <p>Work Type: ${worker.workType}</p>
+                        <p>Experience: ${worker.experience}</p>
+                        <p>Pay: ${worker.pay}</p>
+                    `;
+                    workerList.appendChild(workerCard);
+                });
+            } else {
+                workerList.innerHTML = "<p>No workers matched your criteria.</p>";
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+

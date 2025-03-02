@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Profile for Work</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Create Work Profile</h2>
+        <label>Kind of Work:</label>
+        <input type="text" id="workType" placeholder="Enter work type">
+
+        <label>Expected Payment:</label>
+        <input type="text" id="payment" placeholder="Enter expected payment">
+
+        <label>Working Hours:</label>
+        <input type="text" id="hours" placeholder="Enter available hours">
+
+        <label>Location:</label>
+        <input type="text" id="location" placeholder="Enter your location">
+        <button onclick="getLocation()">Use Current Location</button>
+
+        <button onclick="saveProfile()">Save Profile</button>
+    </div>
+
+    <script>
+        async function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async function(position) {
+                    let lat = position.coords.latitude;
+                    let lon = position.coords.longitude;
+                    let url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+
+                    try {
+                        let response = await fetch(url);
+                        let data = await response.json();
+                        let address = data.display_name || "Location not found";
+                        document.getElementById('location').value = address;
+                    } catch (error) {
+                        console.error("Error fetching location:", error);
+                        alert("Failed to fetch location. Try again.");
+                    }
+                }, function(error) {
+                    alert("Error fetching location: " + error.message);
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function saveProfile() {
+            let workType = document.getElementById('workType').value;
+            let payment = document.getElementById('payment').value;
+            let hours = document.getElementById('hours').value;
+            let location = document.getElementById('location').value;
+            
+            if (!workType || !payment || !hours || !location) {
+                alert("Please fill all fields");
+                return;
+            }
+            
+            let profile = {
+                workType,
+                payment,
+                hours,
+                location
+            };
+            
+            localStorage.setItem("workProfile", JSON.stringify(profile));
+            alert("Profile saved successfully!");
+        }
+    </script>
+</body>
+</html>
+
