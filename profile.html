@@ -70,6 +70,8 @@
 
         <label>Location:</label>
         <input type="text" id="location" placeholder="Enter your location">
+        <input type="hidden" id="latitude">
+        <input type="hidden" id="longitude">
         <button onclick="getLocation()">Use Current Location</button>
 
         <button onclick="saveProfile()">Save Profile</button>
@@ -90,6 +92,8 @@
                         let data = await response.json();
                         let address = data.display_name || "Location not found";
                         document.getElementById('location').value = address;
+                        document.getElementById('latitude').value = lat;
+                        document.getElementById('longitude').value = lon;
                     } catch (error) {
                         console.error("Error fetching location:", error);
                         alert("Failed to fetch location. Try again.");
@@ -109,6 +113,8 @@
             let payment = document.getElementById('payment').value;
             let hours = document.getElementById('hours').value;
             let location = document.getElementById('location').value;
+            let latitude = document.getElementById('latitude').value;
+            let longitude = document.getElementById('longitude').value;
             let bio = document.getElementById('bio').value;
 
             if (!name || !age || !workType || !payment || !hours || !location || !bio) {
@@ -124,6 +130,8 @@
                 payment,
                 hours,
                 location,
+                latitude,
+                longitude,
                 bio
             };
 
@@ -144,6 +152,8 @@
             document.getElementById('payment').value = "";
             document.getElementById('hours').value = "";
             document.getElementById('location').value = "";
+            document.getElementById('latitude').value = "";
+            document.getElementById('longitude').value = "";
         }
 
         function displayProfiles() {
@@ -161,6 +171,8 @@
                     <p><strong>Payment:</strong> ${profile.payment}</p>
                     <p><strong>Hours:</strong> ${profile.hours}</p>
                     <p><strong>Location:</strong> ${profile.location}</p>
+                    <p><strong>Latitude:</strong> ${profile.latitude}</p>
+                    <p><strong>Longitude:</strong> ${profile.longitude}</p>
                     <p><strong>Bio:</strong> ${profile.bio}</p>
                     <button onclick="deleteProfile(${index})">Delete Profile</button>
                 `;
@@ -179,6 +191,7 @@
     </script>
 </body>
 </html>
+
 
 
 

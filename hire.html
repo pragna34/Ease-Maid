@@ -9,16 +9,20 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f8f8f8;
+            background-color: white;
             display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-        .left-half {
+        .container {
             width: 40%;
-            height: auto;
-            min-height: 100vh;
             background: white;
             padding: 20px;
             box-sizing: border-box;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
         input, button {
             width: calc(100% - 20px);
@@ -39,9 +43,9 @@
         }
         .worker-list {
             margin-top: 20px;
+            text-align: left;
         }
         .worker-card {
-            width: 380px;
             padding: 15px;
             background: white;
             margin-bottom: 10px;
@@ -51,56 +55,83 @@
     </style>
 </head>
 <body>
-    <div class="left-half">
+    <div class="container">
         <h2>Hire a Worker</h2>
         <input type="text" id="workType" placeholder="Type of Work">
         <input type="number" id="minPay" placeholder="Min Pay">
         <input type="number" id="maxPay" placeholder="Max Pay">
         <input type="text" id="workingHours" placeholder="Number of Working Hours">
+        <input type="number" id="radius" placeholder="Enter Distance (km)">
         <button onclick="searchWorkers()">Search</button>
         
         <div class="worker-list" id="workerList"></div>
     </div>
 
     <script>
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the Earth in km
+            const dLat = (lat2 - lat1) * (Math.PI / 180);
+            const dLon = (lon2 - lon1) * (Math.PI / 180);
+            const a = 
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c; // Distance in km
+        }
+
         function searchWorkers() {
             let workType = document.getElementById("workType").value.toLowerCase();
             let minPay = parseFloat(document.getElementById("minPay").value);
             let maxPay = parseFloat(document.getElementById("maxPay").value);
             let workingHours = document.getElementById("workingHours").value;
+            let radius = parseFloat(document.getElementById("radius").value);
 
-            let workers = JSON.parse(localStorage.getItem("workerProfiles")) || [];
-            
-            let filteredWorkers = workers.filter(worker => 
-                worker.workType.toLowerCase().includes(workType) &&
-                parseFloat(worker.payment.replace(/\D/g, '')) >= minPay &&
-                parseFloat(worker.payment.replace(/\D/g, '')) <= maxPay &&
-                worker.hours === workingHours
-            );
+            navigator.geolocation.getCurrentPosition(position => {
+                let userLat = position.coords.latitude;
+                let userLon = position.coords.longitude;
 
-            let workerList = document.getElementById("workerList");
-            workerList.innerHTML = "";
-            
-            if (filteredWorkers.length > 0) {
-                filteredWorkers.forEach(worker => {
-                    let workerCard = document.createElement("div");
-                    workerCard.classList.add("worker-card");
-                    workerCard.innerHTML = `
-                        <p><strong>${worker.name}</strong></p>
-                        <p>Work Type: ${worker.workType}</p>
-                        <p>Experience: ${worker.experience}</p>
-                        <p>Pay: ${worker.payment}</p>
-                        <p>Hours: ${worker.hours}</p>
-                    `;
-                    workerList.appendChild(workerCard);
+                let workers = JSON.parse(localStorage.getItem("workerProfiles")) || [];
+                
+                let filteredWorkers = workers.filter(worker => {
+                    let workerLat = worker.latitude;
+                    let workerLon = worker.longitude;
+                    let distance = calculateDistance(userLat, userLon, workerLat, workerLon);
+                    return (
+                        worker.workType.toLowerCase().includes(workType) &&
+                        parseFloat(worker.payment.replace(/\D/g, '')) >= minPay &&
+                        parseFloat(worker.payment.replace(/\D/g, '')) <= maxPay &&
+                        worker.hours === workingHours &&
+                        distance <= radius
+                    );
                 });
-            } else {
-                workerList.innerHTML = "<p>No workers matched your criteria.</p>";
-            }
+
+                let workerList = document.getElementById("workerList");
+                workerList.innerHTML = "";
+                
+                if (filteredWorkers.length > 0) {
+                    filteredWorkers.forEach(worker => {
+                        let workerCard = document.createElement("div");
+                        workerCard.classList.add("worker-card");
+                        workerCard.innerHTML = `
+                            <p><strong>${worker.name}</strong></p>
+                            <p>Work Type: ${worker.workType}</p>
+                            <p>Experience: ${worker.experience}</p>
+                            <p>Pay: ${worker.payment}</p>
+                            <p>Hours: ${worker.hours}</p>
+                            <p>Distance: ${calculateDistance(userLat, userLon, worker.latitude, worker.longitude).toFixed(2)} km</p>
+                        `;
+                        workerList.appendChild(workerCard);
+                    });
+                } else {
+                    workerList.innerHTML = "<p>No workers matched your criteria.</p>";
+                }
+            });
         }
     </script>
 </body>
 </html>
+
 
 
 
