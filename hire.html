@@ -54,9 +54,9 @@
     <div class="left-half">
         <h2>Hire a Worker</h2>
         <input type="text" id="workType" placeholder="Type of Work">
-        <input type="text" id="experience" placeholder="Previous Experience (e.g., 2 years)">
         <input type="number" id="minPay" placeholder="Min Pay">
         <input type="number" id="maxPay" placeholder="Max Pay">
+        <input type="text" id="workingHours" placeholder="Number of Working Hours">
         <button onclick="searchWorkers()">Search</button>
         
         <div class="worker-list" id="workerList"></div>
@@ -65,20 +65,19 @@
     <script>
         function searchWorkers() {
             let workType = document.getElementById("workType").value.toLowerCase();
-            let experience = document.getElementById("experience").value;
-            let minPay = document.getElementById("minPay").value;
-            let maxPay = document.getElementById("maxPay").value;
+            let minPay = parseFloat(document.getElementById("minPay").value);
+            let maxPay = parseFloat(document.getElementById("maxPay").value);
+            let workingHours = document.getElementById("workingHours").value;
 
-            let workers = [
-                { name: "John Doe", workType: "Plumber", experience: "5 years", pay: "$30-$50/hr" },
-                { name: "Jane Smith", workType: "Electrician", experience: "3 years", pay: "$25-$45/hr" }
-            ];
+            let workers = JSON.parse(localStorage.getItem("workerProfiles")) || [];
             
             let filteredWorkers = workers.filter(worker => 
                 worker.workType.toLowerCase().includes(workType) &&
-                worker.experience.includes(experience)
+                parseFloat(worker.payment.replace(/\D/g, '')) >= minPay &&
+                parseFloat(worker.payment.replace(/\D/g, '')) <= maxPay &&
+                worker.hours === workingHours
             );
-            
+
             let workerList = document.getElementById("workerList");
             workerList.innerHTML = "";
             
@@ -90,7 +89,8 @@
                         <p><strong>${worker.name}</strong></p>
                         <p>Work Type: ${worker.workType}</p>
                         <p>Experience: ${worker.experience}</p>
-                        <p>Pay: ${worker.pay}</p>
+                        <p>Pay: ${worker.payment}</p>
+                        <p>Hours: ${worker.hours}</p>
                     `;
                     workerList.appendChild(workerCard);
                 });
@@ -101,6 +101,8 @@
     </script>
 </body>
 </html>
+
+
 
 
 
