@@ -62,6 +62,9 @@
         <label>Kind of Work:</label>
         <input type="text" id="workType" placeholder="Enter work type">
 
+        <label>Experience (Optional):</label>
+        <input type="text" id="experience" placeholder="Enter your experience">
+
         <label>Expected Payment:</label>
         <input type="text" id="payment" placeholder="Enter expected payment">
 
@@ -110,6 +113,7 @@
             let name = document.getElementById('name').value;
             let age = document.getElementById('age').value;
             let workType = document.getElementById('workType').value;
+            let experience = document.getElementById('experience').value;
             let payment = document.getElementById('payment').value;
             let hours = document.getElementById('hours').value;
             let location = document.getElementById('location').value;
@@ -118,7 +122,7 @@
             let bio = document.getElementById('bio').value;
 
             if (!name || !age || !workType || !payment || !hours || !location || !bio) {
-                alert("Please fill all fields");
+                alert("Please fill all required fields");
                 return;
             }
 
@@ -127,6 +131,7 @@
                 name,
                 age,
                 workType,
+                experience,
                 payment,
                 hours,
                 location,
@@ -149,6 +154,7 @@
             document.getElementById('age').value = "";
             document.getElementById('bio').value = "";
             document.getElementById('workType').value = "";
+            document.getElementById('experience').value = "";
             document.getElementById('payment').value = "";
             document.getElementById('hours').value = "";
             document.getElementById('location').value = "";
@@ -168,6 +174,7 @@
                     <p><strong>Name:</strong> ${profile.name}</p>
                     <p><strong>Age:</strong> ${profile.age}</p>
                     <p><strong>Work Type:</strong> ${profile.workType}</p>
+                    <p><strong>Experience:</strong> ${profile.experience || "Not specified"}</p>
                     <p><strong>Payment:</strong> ${profile.payment}</p>
                     <p><strong>Hours:</strong> ${profile.hours}</p>
                     <p><strong>Location:</strong> ${profile.location}</p>
@@ -191,6 +198,7 @@
     </script>
 </body>
 </html>
+
 
 
 

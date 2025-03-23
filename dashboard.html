@@ -109,13 +109,6 @@
     </style>
 </head>
 <body>
-    <script>
-        // Redirect unauthorized users
-        if (localStorage.getItem("isLoggedIn") !== "true") {
-            alert("You must log in first!");
-            window.location.href = "index.html"; // Redirect to login page
-        }
-    </script>
 
     <div class="sidebar">
         <div class="profile-pic" id="profile-pic"></div>
@@ -144,6 +137,13 @@
     </div>
 
     <script>
+        function logout() {
+            console.log("Logging out..."); // Debugging log
+            localStorage.clear(); // Remove all stored data
+            alert("Logged out successfully!");
+            window.location.href = "login.html"; // Redirect to login page
+        }
+
         function openModal() {
             document.getElementById('editProfileModal').style.display = 'block';
         }
@@ -189,16 +189,16 @@
             }
         }
 
-        function logout() {
-            localStorage.removeItem("isLoggedIn"); // Clear login state
-            window.location.href = "index.html"; // Redirect to login page
-        }
-
         // Load profile data on page load
-        window.onload = loadProfile;
+        loadProfile();
     </script>
+
 </body>
 </html>
+
+
+
+
 
 
 
