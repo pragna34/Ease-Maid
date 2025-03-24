@@ -14,11 +14,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 80vh;
-            margin: 20px;
+            height: 100vh;
+            margin: 0;
         }
         .container {
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.9);
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -28,7 +28,7 @@
         h2 {
             text-align: center;
         }
-        input[type="text"], input[type="password"], input[type="email"] {
+        input {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -79,7 +79,7 @@
 
 <div class="container" id="signup-container" style="display: none;">
     <h2>Signup</h2>
-    <form onsubmit="return validateSignup()">
+    <form>
         <input type="text" id="signup-username" placeholder="Username" required>
         <input type="email" id="signup-email" placeholder="Email" required>
         <input type="password" id="signup-password" placeholder="Password" required>
@@ -93,7 +93,7 @@
 
 <div class="container" id="forgot-password-container" style="display: none;">
     <h2>Reset Password</h2>
-    <form onsubmit="return resetPassword()">
+    <form>
         <input type="text" id="reset-username" placeholder="Enter Username" required>
         <input type="password" id="new-password" placeholder="Enter New Password" required>
         <input type="password" id="confirm-new-password" placeholder="Confirm New Password" required>
@@ -112,39 +112,11 @@
         document.getElementById(form + '-container').style.display = 'block';
     }
 
-    function validateSignup() {
-        let username = document.getElementById("signup-username").value.trim();
-        let email = document.getElementById("signup-email").value.trim();
-        let password = document.getElementById("signup-password").value;
-        let confirmPassword = document.getElementById("signup-confirm-password").value;
-
-        if (password !== confirmPassword) {
-            alert("Passwords do not match!");
-            return false;
-        }
-
-        let users = JSON.parse(localStorage.getItem("users")) || [];
-        if (users.some(user => user.username.toLowerCase() === username.toLowerCase())) {
-            alert("Username already exists!");
-            return false;
-        }
-
-        users.push({ username, email, password });
-        localStorage.setItem("users", JSON.stringify(users));
-        alert("Signup successful! You can now log in.");
-        toggleForm('login');
-        return false;
-    }
-
     function validateLogin() {
         let username = document.getElementById("login-username").value.trim();
         let password = document.getElementById("login-password").value;
-        let users = JSON.parse(localStorage.getItem("users")) || [];
 
-        let user = users.find(user => user.username.toLowerCase() === username.toLowerCase() && user.password === password);
-        if (user) {
-            localStorage.setItem("isLoggedIn", "true");
-            localStorage.setItem("currentUser", username);
+        if (username === "pragna" && password === "1234") {
             alert("Login successful!");
             window.location.href = "dashboard.html";
             return false;
@@ -153,41 +125,18 @@
             return false;
         }
     }
-
-    function resetPassword() {
-        let username = document.getElementById("reset-username").value.trim();
-        let newPassword = document.getElementById("new-password").value;
-        let confirmNewPassword = document.getElementById("confirm-new-password").value;
-        let users = JSON.parse(localStorage.getItem("users")) || [];
-
-        let userIndex = users.findIndex(user => user.username.toLowerCase() === username.toLowerCase());
-        if (userIndex === -1) {
-            alert("Username not found!");
-            return false;
-        }
-
-        if (newPassword !== confirmNewPassword) {
-            alert("Passwords do not match!");
-            return false;
-        }
-
-        users[userIndex].password = newPassword;
-        localStorage.setItem("users", JSON.stringify(users));
-        alert("Password reset successful! You can now log in.");
-        toggleForm('login');
-        return false;
-    }
-
-    // Redirect logged-in users to the dashboard
-    document.addEventListener("DOMContentLoaded", function () {
-        if (localStorage.getItem("isLoggedIn") === "true") {
-            window.location.href = "dashboard.html";
-        }
-    });
 </script>
 
 </body>
 </html>
+
+
+
+
+
+
+
+
 
 
 

@@ -44,6 +44,18 @@
             margin-top: 10px;
             text-align: left;
         }
+        .edit-btn {
+            background-color: #007bff;
+        }
+        .edit-btn:hover {
+            background-color: #0056b3;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
     </style>
 </head>
 <body>
@@ -77,7 +89,8 @@
         <input type="hidden" id="longitude">
         <button onclick="getLocation()">Use Current Location</button>
 
-        <button onclick="saveProfile()">Save Profile</button>
+        <button id="saveBtn" onclick="saveProfile()">Save Profile</button>
+        <input type="hidden" id="editingIndex"> <!-- Stores index when updating -->
     </div>
 
     <div id="profileList" class="container" style="margin-top: 20px;"></div>
@@ -120,11 +133,14 @@
             let latitude = document.getElementById('latitude').value;
             let longitude = document.getElementById('longitude').value;
             let bio = document.getElementById('bio').value;
+            let editingIndex = document.getElementById('editingIndex').value;
 
             if (!name || !age || !workType || !payment || !hours || !location || !bio) {
                 alert("Please fill all required fields");
                 return;
             }
+
+            let profiles = JSON.parse(localStorage.getItem("workerProfiles")) || [];
 
             let profile = {
                 id: new Date().getTime(),
@@ -140,8 +156,16 @@
                 bio
             };
 
-            let profiles = JSON.parse(localStorage.getItem("workerProfiles")) || [];
-            profiles.push(profile);
+            if (editingIndex !== "") {
+                // Update existing profile
+                profiles[editingIndex] = profile;
+                document.getElementById('editingIndex').value = "";
+                document.getElementById('saveBtn').innerText = "Save Profile";
+            } else {
+                // Add new profile
+                profiles.push(profile);
+            }
+
             localStorage.setItem("workerProfiles", JSON.stringify(profiles));
 
             alert("Profile saved successfully!");
@@ -160,6 +184,7 @@
             document.getElementById('location').value = "";
             document.getElementById('latitude').value = "";
             document.getElementById('longitude').value = "";
+            document.getElementById('editingIndex').value = "";
         }
 
         function displayProfiles() {
@@ -181,10 +206,28 @@
                     <p><strong>Latitude:</strong> ${profile.latitude}</p>
                     <p><strong>Longitude:</strong> ${profile.longitude}</p>
                     <p><strong>Bio:</strong> ${profile.bio}</p>
-                    <button onclick="deleteProfile(${index})">Delete Profile</button>
+                    <button class="edit-btn" onclick="editProfile(${index})">Update Profile</button>
+                    <button class="delete-btn" onclick="deleteProfile(${index})">Delete Profile</button>
                 `;
                 profileList.appendChild(profileCard);
             });
+        }
+
+        function editProfile(index) {
+            let profiles = JSON.parse(localStorage.getItem("workerProfiles")) || [];
+            let profile = profiles[index];
+
+            document.getElementById('name').value = profile.name;
+            document.getElementById('age').value = profile.age;
+            document.getElementById('bio').value = profile.bio;
+            document.getElementById('workType').value = profile.workType;
+            document.getElementById('experience').value = profile.experience;
+            document.getElementById('payment').value = profile.payment;
+            document.getElementById('hours').value = profile.hours;
+            document.getElementById('location').value = profile.location;
+
+            document.getElementById('editingIndex').value = index;
+            document.getElementById('saveBtn').innerText = "Update Profile";
         }
 
         function deleteProfile(index) {
@@ -198,6 +241,8 @@
     </script>
 </body>
 </html>
+
+
 
 
 

@@ -118,6 +118,7 @@
         <div class="buttons">
             <button onclick="location.href='hire.html'">Hire Worker</button>
             <button onclick="location.href='profile.html'">Make a Profile for Work</button>
+            <button id="hiringStatusBtn" onclick="toggleHiringStatus()">Hiring Status</button>
         </div>
     </div>
     <div class="main-content">
@@ -137,11 +138,13 @@
     </div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadProfile();
+        });
+
         function logout() {
-            console.log("Logging out..."); // Debugging log
-            localStorage.clear(); // Remove all stored data
-            alert("Logged out successfully!");
-            window.location.href = "login.html"; // Redirect to login page
+            alert("You have been logged out.");
+            window.location.href = "login.html";
         }
 
         function openModal() {
@@ -153,22 +156,20 @@
         }
 
         function saveProfile() {
-            // Update Bio
             let bioText = document.getElementById('bioInput').value;
+            localStorage.setItem("userBio", bioText);
             document.getElementById('bio-text').innerText = bioText ? bioText : "No bio added";
-            localStorage.setItem("userBio", bioText); // Save bio in local storage
 
-            // Update Profile Picture
             let fileInput = document.getElementById('profileImageInput');
             let urlInput = document.getElementById('imageUrlInput').value;
             if (urlInput) {
                 document.getElementById('profile-pic').style.backgroundImage = `url(${urlInput})`;
-                localStorage.setItem("profilePic", urlInput); // Save URL in local storage
+                localStorage.setItem("profilePic", urlInput);
             } else if (fileInput.files && fileInput.files[0]) {
                 let reader = new FileReader();
                 reader.onload = function (e) {
                     document.getElementById('profile-pic').style.backgroundImage = `url(${e.target.result})`;
-                    localStorage.setItem("profilePic", e.target.result); // Save base64 in local storage
+                    localStorage.setItem("profilePic", e.target.result);
                 };
                 reader.readAsDataURL(fileInput.files[0]);
             }
@@ -189,12 +190,22 @@
             }
         }
 
-        // Load profile data on page load
-        loadProfile();
+        function toggleHiringStatus() {
+            let currentStatus = localStorage.getItem("hiringStatus") || "Not Hiring";
+            let newStatus = currentStatus === "Hiring" ? "Not Hiring" : "Hiring";
+
+            // Save the status in localStorage
+            localStorage.setItem("hiringStatus", newStatus);
+            alert(`Your hiring status has been updated to: ${newStatus}`);
+        }
     </script>
 
 </body>
 </html>
+
+
+
+
 
 
 
