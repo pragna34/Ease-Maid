@@ -52,6 +52,23 @@
             border-radius: 8px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
+        .hire-button {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            margin-right: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .not-hire-button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -120,6 +137,8 @@
                             <p>Pay: ${worker.payment}</p>
                             <p>Hours: ${worker.hours}</p>
                             <p>Distance: ${calculateDistance(userLat, userLon, worker.latitude, worker.longitude).toFixed(2)} km</p>
+                            <button class="hire-button" onclick="hireWorker('${worker.name}')">Hire</button>
+                            <button class="not-hire-button" onclick="notHireWorker('${worker.name}')">Not Hire</button>
                         `;
                         workerList.appendChild(workerCard);
                     });
@@ -128,9 +147,20 @@
                 }
             });
         }
+
+        function hireWorker(workerName) {
+            alert(`${workerName} has been hired!`);
+            // Add logic for hiring the worker
+        }
+
+        function notHireWorker(workerName) {
+            alert(`${workerName} was not hired.`);
+            // Add logic for rejecting the worker
+        }
     </script>
 </body>
 </html>
+
 
 
 
