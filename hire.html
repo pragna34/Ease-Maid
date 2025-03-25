@@ -149,8 +149,17 @@
         }
 
         function hireWorker(workerName) {
-            alert(`${workerName} has been hired!`);
-            // Add logic for hiring the worker
+            let workers = JSON.parse(localStorage.getItem("workerProfiles")) || [];
+            let worker = workers.find(w => w.name === workerName);
+
+            if (worker) {
+                let hiredWorkers = JSON.parse(localStorage.getItem("hiredWorkers")) || [];
+                hiredWorkers.push(worker);
+                localStorage.setItem("hiredWorkers", JSON.stringify(hiredWorkers));
+                alert(`${workerName} has been hired!`);
+            } else {
+                alert(`Error: Worker profile not found.`);
+            }
         }
 
         function notHireWorker(workerName) {
@@ -160,6 +169,7 @@
     </script>
 </body>
 </html>
+
 
 
 

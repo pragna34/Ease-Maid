@@ -1,205 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-        }
-        .sidebar {
-            width: 300px;
-            background-color: white;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .profile-pic {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid black;
-            background: url('https://cdn-icons-png.flaticon.com/512/149/149071.png') no-repeat center;
-            background-size: cover;
-            margin-bottom: 10px;
-        }
-        .bio {
-            text-align: center;
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 15px;
-        }
-        .edit-profile-btn, .logout-btn {
-            padding: 8px;
-            font-size: 14px;
-            border: 2px solid black;
-            border-radius: 5px;
-            background-color: white;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 15px;
-        }
-        .buttons {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            gap: 10px;
-        }
-        .buttons button {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            border: 2px solid black;
-            border-radius: 5px;
-            background-color: white;
-            cursor: pointer;
-        }
-        .buttons button:hover {
-            background-color: #ddd;
-        }
-        .main-content {
-            flex: 1;
-            padding: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: #555;
-        }
-        /* Modal Styling */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-        .modal-content {
-            background-color: white;
-            margin: 10% auto;
-            padding: 20px;
-            border-radius: 10px;
-            width: 300px;
-            text-align: center;
-        }
-        .close {
-            float: right;
-            font-size: 20px;
-            cursor: pointer;
-        }
-        input, textarea {
-            width: 90%;
-            padding: 8px;
-            margin-top: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+    }
+    .sidebar {
+      width: 300px;
+      background-color: white;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .profile-pic {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid black;
+      background: url('https://cdn-icons-png.flaticon.com/512/149/149071.png') no-repeat center;
+      background-size: cover;
+      margin-bottom: 10px;
+    }
+    .bio {
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 15px;
+    }
+    .edit-profile-btn, .logout-btn {
+      padding: 8px;
+      font-size: 14px;
+      border: 2px solid black;
+      border-radius: 5px;
+      background-color: white;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      gap: 10px;
+    }
+    .buttons button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      border: 2px solid black;
+      border-radius: 5px;
+      background-color: white;
+      cursor: pointer;
+    }
+    .buttons button:hover {
+      background-color: #ddd;
+    }
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #555;
+    }
+    /* Modal Styling */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+      text-align: center;
+    }
+    .close {
+      float: right;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    input, textarea {
+      width: 90%;
+      padding: 8px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-
-    <div class="sidebar">
-        <div class="profile-pic" id="profile-pic"></div>
-        <p class="bio" id="bio-text">No bio added</p>
-        <button class="edit-profile-btn" onclick="openModal()">Edit Profile</button>
-        <button class="logout-btn" onclick="logout()">Logout</button>
-        <div class="buttons">
-            <button onclick="location.href='hire.html'">Hire Worker</button>
-            <button onclick="location.href='profile.html'">Make a Profile for Work</button>
-            <button id="hiringStatusBtn" onclick="toggleHiringStatus()">Hiring Status</button>
-        </div>
+  <div class="sidebar">
+    <div class="profile-pic" id="profile-pic"></div>
+    <p class="bio" id="bio-text">No bio added</p>
+    <button class="edit-profile-btn" onclick="openModal()">Edit Profile</button>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+    <div class="buttons">
+      <button onclick="location.href='hire.html'">Hire Worker</button>
+      <button onclick="location.href='profile.html'">Make a Profile for Work</button>
+      <button id="hiringStatusBtn" onclick="toggleHiringStatus()">Hiring Status</button>
     </div>
-    <div class="main-content">
-        Welcome to Your Dashboard
-    </div>
+  </div>
+  <div class="main-content">
+    Welcome to Your Dashboard
+  </div>
 
-    <!-- Edit Profile Modal -->
-    <div id="editProfileModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h3>Edit Profile</h3>
-            <input type="file" id="profileImageInput">
-            <input type="text" id="imageUrlInput" placeholder="Paste image URL from Google">
-            <textarea id="bioInput" placeholder="Enter your bio"></textarea>
-            <button onclick="saveProfile()">Save</button>
-        </div>
+  <!-- Edit Profile Modal -->
+  <div id="editProfileModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h3>Edit Profile</h3>
+      <input type="file" id="profileImageInput">
+      <input type="text" id="imageUrlInput" placeholder="Paste image URL from Google">
+      <textarea id="bioInput" placeholder="Enter your bio"></textarea>
+      <button onclick="saveProfile()">Save</button>
     </div>
+  </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            loadProfile();
+  <!-- Hired Profiles Modal -->
+  <div id="hiredProfilesModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeHiredProfilesModal()">&times;</span>
+      <h3>Hired Profiles</h3>
+      <div id="hiredProfilesList"></div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      loadProfile();
+    });
+
+    function logout() {
+      alert("You have been logged out.");
+      window.location.href = "login.html";
+    }
+
+    function openModal() {
+      document.getElementById('editProfileModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('editProfileModal').style.display = 'none';
+    }
+
+    function saveProfile() {
+      let bioText = document.getElementById('bioInput').value;
+      localStorage.setItem("userBio", bioText);
+      document.getElementById('bio-text').innerText = bioText ? bioText : "No bio added";
+
+      let fileInput = document.getElementById('profileImageInput');
+      let urlInput = document.getElementById('imageUrlInput').value;
+
+      if (urlInput) {
+        document.getElementById('profile-pic').style.backgroundImage = `url(${urlInput})`;
+        localStorage.setItem("profilePic", urlInput);
+      } else if (fileInput.files && fileInput.files[0]) {
+        let reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById('profile-pic').style.backgroundImage = `url(${e.target.result})`;
+          localStorage.setItem("profilePic", e.target.result);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      }
+
+      closeModal();
+    }
+
+    function loadProfile() {
+      let savedBio = localStorage.getItem("userBio");
+      let savedProfilePic = localStorage.getItem("profilePic");
+
+      if (savedBio) {
+        document.getElementById('bio-text').innerText = savedBio;
+      }
+      if (savedProfilePic) {
+        document.getElementById('profile-pic').style.backgroundImage = `url(${savedProfilePic})`;
+      }
+    }
+
+    function toggleHiringStatus() {
+      let currentStatus = localStorage.getItem("hiringStatus") || "Not Hiring";
+      let newStatus = currentStatus === "Hiring" ? "Not Hiring" : "Hiring";
+
+      localStorage.setItem("hiringStatus", newStatus);
+      alert(`Your hiring status has been updated to: ${newStatus}`);
+
+      // Show hired profiles when status is "Hiring"
+      if (newStatus === "Hiring") {
+        showHiredProfiles();
+      }
+    }
+
+    function showHiredProfiles() {
+      let hiredWorkers = JSON.parse(localStorage.getItem("hiredWorkers")) || [];
+      let hiredProfilesList = document.getElementById("hiredProfilesList");
+      hiredProfilesList.innerHTML = ""; // Clear previous content
+
+      if (hiredWorkers.length > 0) {
+        hiredWorkers.forEach(worker => {
+          let profileDiv = document.createElement("div");
+          profileDiv.style.marginBottom = "10px";
+          profileDiv.innerHTML = `
+            <strong>Name:</strong> ${worker.name}<br>
+            <strong>Email:</strong> ${worker.email}<br>
+            <strong>Description:</strong> ${worker.description}<br>
+            <hr>
+          `;
+          hiredProfilesList.appendChild(profileDiv);
         });
+      } else {
+        hiredProfilesList.innerHTML = "No hired profiles to display.";
+      }
 
-        function logout() {
-            alert("You have been logged out.");
-            window.location.href = "login.html";
-        }
+      document.getElementById("hiredProfilesModal").style.display = "block";
+    }
 
-        function openModal() {
-            document.getElementById('editProfileModal').style.display = 'block';
-        }
-
-        function closeModal() {
-            document.getElementById('editProfileModal').style.display = 'none';
-        }
-
-        function saveProfile() {
-            let bioText = document.getElementById('bioInput').value;
-            localStorage.setItem("userBio", bioText);
-            document.getElementById('bio-text').innerText = bioText ? bioText : "No bio added";
-
-            let fileInput = document.getElementById('profileImageInput');
-            let urlInput = document.getElementById('imageUrlInput').value;
-            if (urlInput) {
-                document.getElementById('profile-pic').style.backgroundImage = `url(${urlInput})`;
-                localStorage.setItem("profilePic", urlInput);
-            } else if (fileInput.files && fileInput.files[0]) {
-                let reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('profile-pic').style.backgroundImage = `url(${e.target.result})`;
-                    localStorage.setItem("profilePic", e.target.result);
-                };
-                reader.readAsDataURL(fileInput.files[0]);
-            }
-
-            closeModal();
-        }
-
-        function loadProfile() {
-            let savedBio = localStorage.getItem("userBio");
-            let savedProfilePic = localStorage.getItem("profilePic");
-
-            if (savedBio) {
-                document.getElementById('bio-text').innerText = savedBio;
-            }
-
-            if (savedProfilePic) {
-                document.getElementById('profile-pic').style.backgroundImage = `url(${savedProfilePic})`;
-            }
-        }
-
-        function toggleHiringStatus() {
-            let currentStatus = localStorage.getItem("hiringStatus") || "Not Hiring";
-            let newStatus = currentStatus === "Hiring" ? "Not Hiring" : "Hiring";
-
-            // Save the status in localStorage
-            localStorage.setItem("hiringStatus", newStatus);
-            alert(`Your hiring status has been updated to: ${newStatus}`);
-        }
-    </script>
-
+    function closeHiredProfilesModal() {
+      document.getElementById("hiredProfilesModal").style.display = "none";
+    }
+  </script>
 </body>
 </html>
 
