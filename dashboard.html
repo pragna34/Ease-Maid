@@ -88,6 +88,58 @@
       background-size: cover;
       cursor: pointer;
     }
+    #chatbot-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+    #chat-icon {
+        background: #007bff;
+        color: white;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 24px;
+    }
+    #chat-window {
+        width: 300px;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        position: absolute;
+        top: 60px;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    #chat-header {
+        background: #007bff;
+        color: white;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: bold;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+    #chat-body {
+        height: 200px;
+        overflow-y: auto;
+        padding: 10px;
+    }
+    #chat-input {
+        border: none;
+        padding: 10px;
+        width: 100%;
+        border-top: 1px solid #ccc;
+    }
+    .hidden { display: none; }
     /* Modal Styling */
     .modal {
       display: none;
@@ -145,6 +197,14 @@
       <div id="chatResponse"></div>
     </div>
   </div>
+  <div id="chatbot-container">
+    <div id="chat-icon" onclick="toggleChatbot()">💬</div>
+    <div id="chat-window" class="hidden">
+        <div id="chat-header">Chatbot <span onclick="toggleChatbot()">✖</span></div>
+        <div id="chat-body"></div>
+        <input type="text" id="chat-input" placeholder="Ask a question..." onkeypress="handleChat(event)">
+    </div>
+</div>
 
   <!-- Edit Profile Modal -->
   <div id="editProfileModal" class="modal">
@@ -270,6 +330,39 @@
       let input = document.getElementById("chatInput").value;
       let responseBox = document.getElementById("chatResponse");
       responseBox.innerHTML = `<p>You: ${input}</p><p>AI: This is a placeholder response.</p>`;
+    }
+    const faqResponses = {
+        "how do i hire a worker": "Click on the 'Hire Worker' button on your dashboard. You'll be redirected to a page where you can browse available workers and select the one that fits your needs.",
+        "how can i create a profile for work": "Click on the 'Make a Profile for Work' button. Fill in the required details, such as your skills, availability, and experience, then submit the form.",
+        "what is the hiring status button for": "The Hiring Status button lets you update whether you're currently hiring workers or not. When activated, available workers can see that you're looking for someone.",
+        "how do i edit my profile information": "Click on 'Edit Profile' in the sidebar, update your details, and save changes.",
+        "how do i log out": "Click the 'Logout' button in the sidebar. You will be redirected to the login page.",
+        "how do i use the chat feature": "Click on the chat icon (💬) in the top right corner to open the chat. You can ask questions, and the support chatbot will provide answers.",
+        "can i delete my profile": "Currently, there is no option to delete a profile through the app. However, you can contact support for account removal.",
+        "how can i contact customer support": "Use the chatbox to ask your queries. If you need further help, check the Support section in the app.",
+        "what happens after i hire a worker": "Once you hire a worker, they will be notified, and you can discuss the work details through the chatbox or any other contact method provided.",
+        "is this app free to use": "Yes, creating a profile and hiring workers is free. However, there might be premium features in the future."
+    };
+
+    function toggleChatbot() {
+        document.getElementById("chat-window").classList.toggle("hidden");
+    }
+
+    function handleChat(event) {
+        if (event.key === "Enter") {
+            let input = document.getElementById("chat-input").value.toLowerCase().trim();
+            let chatBody = document.getElementById("chat-body");
+            
+            let userMessage = `<p><strong>You:</strong> ${input}</p>`;
+            chatBody.innerHTML += userMessage;
+            document.getElementById("chat-input").value = "";
+            
+            let response = faqResponses[input] || "I'm sorry, I don't understand that question. Try asking something else.";
+            let botMessage = `<p><strong>Bot:</strong> ${response}</p>`;
+            chatBody.innerHTML += botMessage;
+            
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
     }
   </script>
 </body>
