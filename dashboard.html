@@ -77,6 +77,17 @@
       font-weight: bold;
       color: #555;
     }
+    /* AI Chatbot Icon */
+    .chatbot-icon {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: url('https://cdn-icons-png.flaticon.com/512/4712/4712035.png') no-repeat center;
+      background-size: cover;
+      cursor: pointer;
+    }
     /* Modal Styling */
     .modal {
       display: none;
@@ -122,6 +133,17 @@
   </div>
   <div class="main-content">
     Welcome to Your Dashboard
+  </div>
+  <div class="chatbot-icon" onclick="openChatbot()"></div>
+  
+  <div id="chatbotModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeChatbot()">&times;</span>
+      <h3>AI Chatbot</h3>
+      <textarea id="chatInput" placeholder="Type your message..."></textarea>
+      <button onclick="sendMessage()">Send</button>
+      <div id="chatResponse"></div>
+    </div>
   </div>
 
   <!-- Edit Profile Modal -->
@@ -237,6 +259,17 @@
 
     function closeHiredProfilesModal() {
       document.getElementById("hiredProfilesModal").style.display = "none";
+    }
+    function openChatbot() {
+      document.getElementById("chatbotModal").style.display = "block";
+    }
+    function closeChatbot() {
+      document.getElementById("chatbotModal").style.display = "none";
+    }
+    function sendMessage() {
+      let input = document.getElementById("chatInput").value;
+      let responseBox = document.getElementById("chatResponse");
+      responseBox.innerHTML = `<p>You: ${input}</p><p>AI: This is a placeholder response.</p>`;
     }
   </script>
 </body>
