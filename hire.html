@@ -24,13 +24,23 @@
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
-        input, button {
-            width: calc(100% - 20px);
+        .input-group {
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, select, button {
+            width: 100%;
             padding: 10px;
-            margin: 5px 0;
             font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            box-sizing: border-box;
+            margin-bottom: 5px;
         }
         button {
             background-color: #007bff;
@@ -74,10 +84,24 @@
 <body>
     <div class="container">
         <h2>Hire a Worker</h2>
-        <input type="text" id="workType" placeholder="Type of Work">
-        <input type="number" id="minPay" placeholder="Min Pay">
-        <input type="number" id="maxPay" placeholder="Max Pay">
-        <input type="text" id="workingHours" placeholder="Number of Working Hours">
+
+        <div class="input-group">
+            <label for="workTypeInput">Type of Work</label>
+            <input type="text" id="workTypeInput" placeholder="Type of Work">
+            <select id="workTypeDropdown" onchange="document.getElementById('workTypeInput').value=this.value"></select>
+        </div>
+
+        <div class="input-group">
+            <label for="expectedPayInput">Expected Payment</label>
+            <input type="number" id="expectedPayInput" placeholder="Expected Payment">
+        </div>
+
+        <div class="input-group">
+            <label for="workingHoursInput">Working Hours</label>
+            <input type="text" id="workingHoursInput" placeholder="Number of Working Hours">
+            <select id="workingHoursDropdown" onchange="document.getElementById('workingHoursInput').value=this.value"></select>
+        </div>
+
         <input type="number" id="radius" placeholder="Enter Distance (km)">
         <button onclick="searchWorkers()">Search</button>
         
@@ -86,51 +110,81 @@
 
     <script>
         function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371; // Radius of the Earth in km
-            const dLat = (lat2 - lat1) * (Math.PI / 180);
-            const dLon = (lon2 - lon1) * (Math.PI / 180);
-            const a = 
-                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c; // Distance in km
+            return R * c;
+        }
+
+        function populateDropdowns() {
+            const workers = JSON.parse(localStorage.getItem("workerProfiles")) || [];
+
+            const workTypes = new Set();
+            const hours = new Set();
+
+            workers.forEach(worker => {
+                if (worker.workType) workTypes.add(worker.workType);
+                if (worker.hours) hours.add(worker.hours);
+            });
+
+            fillDropdown("workTypeDropdown", [...workTypes]);
+            fillDropdown("workingHoursDropdown", [...hours].sort((a,b)=>a-b));
+        }
+
+        function fillDropdown(id, values) {
+            const dropdown = document.getElementById(id);
+            dropdown.innerHTML = `<option value="">Select from saved</option>`;
+            values.forEach(val => {
+                const option = document.createElement("option");
+                option.value = val;
+                option.textContent = val;
+                dropdown.appendChild(option);
+            });
         }
 
         function searchWorkers() {
-            let workType = document.getElementById("workType").value.toLowerCase();
-            let minPay = parseFloat(document.getElementById("minPay").value);
-            let maxPay = parseFloat(document.getElementById("maxPay").value);
-            let workingHours = document.getElementById("workingHours").value;
-            let radius = parseFloat(document.getElementById("radius").value);
+            const workType = document.getElementById("workTypeInput").value.toLowerCase();
+            const expectedPayment = parseFloat(document.getElementById("expectedPayInput").value);
+            const workingHours = document.getElementById("workingHoursInput").value;
+            const radius = parseFloat(document.getElementById("radius").value);
+
+            if (!radius || isNaN(radius)) {
+                alert("Please enter a valid distance.");
+                return;
+            }
 
             navigator.geolocation.getCurrentPosition(position => {
-                let userLat = position.coords.latitude;
-                let userLon = position.coords.longitude;
+                const userLat = position.coords.latitude;
+                const userLon = position.coords.longitude;
 
-                let workers = JSON.parse(localStorage.getItem("workerProfiles")) || [];
-                
-                let filteredWorkers = workers.filter(worker => {
-                    let workerLat = worker.latitude;
-                    let workerLon = worker.longitude;
-                    let distance = calculateDistance(userLat, userLon, workerLat, workerLon);
+                const workers = JSON.parse(localStorage.getItem("workerProfiles")) || [];
+
+                const filteredWorkers = workers.filter(worker => {
+                    const distance = calculateDistance(userLat, userLon, worker.latitude, worker.longitude);
+                    const workerPay = parseFloat(worker.payment.replace(/\D/g, ''));
+                    const workerHours = parseFloat(worker.hours);
+                    const inputHours = parseFloat(workingHours);
+
                     return (
                         worker.workType.toLowerCase().includes(workType) &&
-                        parseFloat(worker.payment.replace(/\D/g, '')) >= minPay &&
-                        parseFloat(worker.payment.replace(/\D/g, '')) <= maxPay &&
-                        worker.hours === workingHours &&
+                        Math.abs(workerPay - expectedPayment) <= 3000 &&
+                        !isNaN(workerHours) && !isNaN(inputHours) && Math.abs(workerHours - inputHours) <= 3 &&
                         distance <= radius
                     );
                 });
 
-                let workerList = document.getElementById("workerList");
+                const workerList = document.getElementById("workerList");
                 workerList.innerHTML = "";
-                
+
                 if (filteredWorkers.length > 0) {
                     filteredWorkers.forEach(worker => {
-                        let workerCard = document.createElement("div");
-                        workerCard.classList.add("worker-card");
-                        workerCard.innerHTML = `
+                        const card = document.createElement("div");
+                        card.className = "worker-card";
+                        card.innerHTML = `
                             <p><strong>${worker.name}</strong></p>
                             <p>Work Type: ${worker.workType}</p>
                             <p>Experience: ${worker.experience}</p>
@@ -140,7 +194,7 @@
                             <button class="hire-button" onclick="hireWorker('${worker.name}')">Hire</button>
                             <button class="not-hire-button" onclick="notHireWorker('${worker.name}')">Not Hire</button>
                         `;
-                        workerList.appendChild(workerCard);
+                        workerList.appendChild(card);
                     });
                 } else {
                     workerList.innerHTML = "<p>No workers matched your criteria.</p>";
@@ -149,26 +203,28 @@
         }
 
         function hireWorker(workerName) {
-            let workers = JSON.parse(localStorage.getItem("workerProfiles")) || [];
-            let worker = workers.find(w => w.name === workerName);
-
+            const workers = JSON.parse(localStorage.getItem("workerProfiles")) || [];
+            const worker = workers.find(w => w.name === workerName);
             if (worker) {
-                let hiredWorkers = JSON.parse(localStorage.getItem("hiredWorkers")) || [];
-                hiredWorkers.push(worker);
-                localStorage.setItem("hiredWorkers", JSON.stringify(hiredWorkers));
+                const hired = JSON.parse(localStorage.getItem("hiredWorkers")) || [];
+                hired.push(worker);
+                localStorage.setItem("hiredWorkers", JSON.stringify(hired));
                 alert(`${workerName} has been hired!`);
-            } else {
-                alert(`Error: Worker profile not found.`);
             }
         }
 
         function notHireWorker(workerName) {
             alert(`${workerName} was not hired.`);
-            // Add logic for rejecting the worker
         }
+
+        window.onload = populateDropdowns;
     </script>
 </body>
 </html>
+
+
+
+
 
 
 
