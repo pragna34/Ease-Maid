@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard</title>
   <style>
     body {
@@ -77,7 +77,6 @@
       font-weight: bold;
       color: #555;
     }
-   
     #chatbot-container {
         position: fixed;
         top: 20px;
@@ -130,7 +129,7 @@
         border-top: 1px solid #ccc;
     }
     .hidden { display: none; }
-    /* Modal Styling */
+
     .modal {
       display: none;
       position: fixed;
@@ -170,23 +169,15 @@
     <div class="buttons">
       <button onclick="location.href='hire.html'">Hire Worker</button>
       <button onclick="location.href='profile.html'">Make a Profile for Work</button>
-      <button id="hiringStatusBtn" onclick="toggleHiringStatus()">Hiring Status</button>
+      <button onclick="location.href='Hiring_status_worker.html'">Hiring Status for Worker</button>
+      <button onclick="toggleHirerHiringStatus()">Hiring Status for Hirer</button>
     </div>
   </div>
+
   <div class="main-content">
     Welcome to Your Dashboard
   </div>
-  <div class="chatbot-icon" onclick="openChatbot()"></div>
-  
-  <div id="chatbotModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeChatbot()">&times;</span>
-      <h3>AI Chatbot</h3>
-      <textarea id="chatInput" placeholder="Type your message..."></textarea>
-      <button onclick="sendMessage()">Send</button>
-      <div id="chatResponse"></div>
-    </div>
-  </div>
+
   <div id="chatbot-container">
     <div id="chat-icon" onclick="toggleChatbot()">💬</div>
     <div id="chat-window" class="hidden">
@@ -194,7 +185,7 @@
         <div id="chat-body"></div>
         <input type="text" id="chat-input" placeholder="Ask a question..." onkeypress="handleChat(event)">
     </div>
-</div>
+  </div>
 
   <!-- Edit Profile Modal -->
   <div id="editProfileModal" class="modal">
@@ -205,15 +196,6 @@
       <input type="text" id="imageUrlInput" placeholder="Paste image URL from Google">
       <textarea id="bioInput" placeholder="Enter your bio"></textarea>
       <button onclick="saveProfile()">Save</button>
-    </div>
-  </div>
-
-  <!-- Hired Profiles Modal -->
-  <div id="hiredProfilesModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeHiredProfilesModal()">&times;</span>
-      <h3>Hired Profiles</h3>
-      <div id="hiredProfilesList"></div>
     </div>
   </div>
 
@@ -270,67 +252,29 @@
       }
     }
 
-    function toggleHiringStatus() {
-      let currentStatus = localStorage.getItem("hiringStatus") || "Not Hiring";
+    function toggleHirerHiringStatus() {
+      let currentStatus = localStorage.getItem("hirerHiringStatus") || "Not Hiring";
       let newStatus = currentStatus === "Hiring" ? "Not Hiring" : "Hiring";
-
-      localStorage.setItem("hiringStatus", newStatus);
-      alert(`Your hiring status has been updated to: ${newStatus}`);
-
-      // Show hired profiles when status is "Hiring"
-      if (newStatus === "Hiring") {
-        showHiredProfiles();
-      }
+      localStorage.setItem("hirerHiringStatus", newStatus);
     }
 
-    function showHiredProfiles() {
-      let hiredWorkers = JSON.parse(localStorage.getItem("hiredWorkers")) || [];
-      let hiredProfilesList = document.getElementById("hiredProfilesList");
-      hiredProfilesList.innerHTML = ""; // Clear previous content
-
-      if (hiredWorkers.length > 0) {
-        hiredWorkers.forEach(worker => {
-          let profileDiv = document.createElement("div");
-          profileDiv.style.marginBottom = "10px";
-          profileDiv.innerHTML = `
-            <strong>Name:</strong> ${worker.name}<br>
-            <strong>Email:</strong> ${worker.email}<br>
-            <strong>Description:</strong> ${worker.description}<br>
-            <hr>
-          `;
-          hiredProfilesList.appendChild(profileDiv);
-        });
-      } else {
-        hiredProfilesList.innerHTML = "No hired profiles to display.";
-      }
-
-      document.getElementById("hiredProfilesModal").style.display = "block";
-    }
-
-    function closeHiredProfilesModal() {
-      document.getElementById("hiredProfilesModal").style.display = "none";
-    }
-    
-    
     const faqResponses = {
-        "how do i hire a worker": "Click on the 'Hire Worker' button on your dashboard. You'll be redirected to a page where you can browse available workers and select the one that fits your needs.",
-        "how can i create a profile for work": "Click on the 'Make a Profile for Work' button. Fill in the required details, such as your skills, availability, and experience, then submit the form.",
-        "what is the hiring status button for": "The Hiring Status button lets you update whether you're currently hiring workers or not. When activated, available workers can see that you're looking for someone.",
-        "how do i edit my profile information": "Click on 'Edit Profile' in the sidebar, update your details, and save changes.",
-        "how do i log out": "Click the 'Logout' button in the sidebar. You will be redirected to the login page.",
-        "how do i use the chat feature": "Click on the chat icon (💬) in the top right corner to open the chat. You can ask questions, and the support chatbot will provide answers.",
-        "can i delete my profile": "Currently, there is no option to delete a profile through the app. However, you can contact support for account removal.",
-        "how can i contact customer support": "Use the chatbox to ask your queries. If you need further help, check the Support section in the app.",
-        "what happens after i hire a worker": "Once you hire a worker, they will be notified, and you can discuss the work details through the chatbox or any other contact method provided.",
-        "is this app free to use": "Yes, creating a profile and hiring workers is free. However, there might be premium features in the future."
+      "how do i hire a worker": "Click on the 'Hire Worker' button on your dashboard...",
+      "how can i create a profile for work": "Click on the 'Make a Profile for Work' button...",
+      "what is the hiring status button for": "There are now separate buttons for worker and hirer hiring status...",
+      "how do i edit my profile information": "Click on 'Edit Profile'...",
+      "how do i log out": "Click the 'Logout' button...",
+      "how do i use the chat feature": "Click the chat icon (💬)...",
+      "can i delete my profile": "Currently, there is no delete option...",
+      "how can i contact customer support": "Use the chatbox...",
+      "what happens after i hire a worker": "Once you hire a worker...",
+      "is this app free to use": "Yes, the app is free..."
     };
 
     function toggleChatbot() {
-        let chatWindow = document.getElementById("chat-window");
-        chatWindow.classList.toggle("hidden");
+      let chatWindow = document.getElementById("chat-window");
+      chatWindow.classList.toggle("hidden");
     }
-  
-
 
     function handleChat(event) {
       if (event.key === "Enter") {
@@ -341,13 +285,14 @@
         chatBody.innerHTML += userMessage;
         document.getElementById("chat-input").value = "";
 
-        let response = faqResponses[input] || "I'm sorry, I don't understand that question. Try asking something else.";
+        let response = faqResponses[input] || "I'm sorry, I don't understand that question.";
         let botMessage = `<p><strong>Bot:</strong> ${response}</p>`;
         chatBody.innerHTML += botMessage;
 
         chatBody.scrollTop = chatBody.scrollHeight;
       }
     }
+
     document.addEventListener("click", function (event) {
       const chatbotContainer = document.getElementById("chatbot-container");
       const chatWindow = document.getElementById("chat-window");
@@ -359,6 +304,7 @@
   </script>
 </body>
 </html>
+
 
 
 
