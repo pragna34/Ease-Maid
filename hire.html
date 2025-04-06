@@ -1,226 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hire a Worker</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .container {
-            width: 40%;
-            background: white;
-            padding: 20px;
-            box-sizing: border-box;
-            text-align: center;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        .input-group {
-            margin-bottom: 10px;
-            text-align: left;
-        }
-        .input-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        input, select, button {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-            margin-bottom: 5px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-            border: none;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .worker-list {
-            margin-top: 20px;
-            text-align: left;
-        }
-        .worker-card {
-            padding: 15px;
-            background: white;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        .hire-button {
-            background-color: green;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            margin-right: 8px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .not-hire-button {
-            background-color: red;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hire a Worker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      width: 40%;
+      background: white;
+      padding: 20px;
+      box-sizing: border-box;
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+    .input-group {
+      margin-bottom: 10px;
+      text-align: left;
+    }
+    .input-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+      margin-bottom: 5px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      border: none;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .worker-list {
+      margin-top: 20px;
+      text-align: left;
+    }
+    .worker-card {
+      padding: 15px;
+      background: white;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    .hire-button {
+      background-color: green;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      margin-right: 8px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .not-hire-button {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 1000;
+}
+.notification.show {
+  opacity: 1;
+}
+
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Hire a Worker</h2>
+  <div class="container">
+    <h2>Hire a Worker</h2>
 
-        <div class="input-group">
-            <label for="workTypeInput">Type of Work</label>
-            <input type="text" id="workTypeInput" placeholder="Type of Work">
-            <select id="workTypeDropdown" onchange="document.getElementById('workTypeInput').value=this.value"></select>
-        </div>
-
-        <div class="input-group">
-            <label for="expectedPayInput">Expected Payment</label>
-            <input type="number" id="expectedPayInput" placeholder="Expected Payment">
-        </div>
-
-        <div class="input-group">
-            <label for="workingHoursInput">Working Hours</label>
-            <input type="text" id="workingHoursInput" placeholder="Number of Working Hours">
-            <select id="workingHoursDropdown" onchange="document.getElementById('workingHoursInput').value=this.value"></select>
-        </div>
-
-        <input type="number" id="radius" placeholder="Enter Distance (km)">
-        <button onclick="searchWorkers()">Search</button>
-        
-        <div class="worker-list" id="workerList"></div>
+    <div class="input-group">
+      <label for="workTypeInput">Type of Work</label>
+      <input type="text" id="workTypeInput" placeholder="Type of Work" />
+      <select id="workTypeDropdown" onchange="document.getElementById('workTypeInput').value=this.value"></select>
     </div>
 
-    <script>
-        function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371;
-            const dLat = (lat2 - lat1) * Math.PI / 180;
-            const dLon = (lon2 - lon1) * Math.PI / 180;
-            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c;
+    <div class="input-group">
+      <label for="expectedPayInput">Expected Payment</label>
+      <input type="number" id="expectedPayInput" placeholder="Expected Payment" />
+    </div>
+
+    <div class="input-group">
+      <label for="workingHoursInput">Working Hours</label>
+      <input type="text" id="workingHoursInput" placeholder="Number of Working Hours" />
+      <select id="workingHoursDropdown" onchange="document.getElementById('workingHoursInput').value=this.value"></select>
+    </div>
+
+    <input type="number" id="radius" placeholder="Enter Distance (km)" />
+    <button onclick="searchWorkers()">Search</button>
+
+    <div class="worker-list" id="workerList"></div>
+
+    <div class="notification" id="notification">Notification sent</div>
+  </div>
+
+  <script>
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    function populateDropdowns() {
+      const workers = JSON.parse(localStorage.getItem("workerProfiles")) || [];
+
+      const workTypes = new Set();
+      const hours = new Set();
+
+      workers.forEach(worker => {
+        if (worker.workType) workTypes.add(worker.workType);
+        if (worker.hours) hours.add(worker.hours);
+      });
+
+      fillDropdown("workTypeDropdown", [...workTypes]);
+      fillDropdown("workingHoursDropdown", [...hours].sort((a,b)=>a-b));
+    }
+
+    function fillDropdown(id, values) {
+      const dropdown = document.getElementById(id);
+      dropdown.innerHTML = `<option value="">Select from saved</option>`;
+      values.forEach(val => {
+        const option = document.createElement("option");
+        option.value = val;
+        option.textContent = val;
+        dropdown.appendChild(option);
+      });
+    }
+
+    function searchWorkers() {
+      const workType = document.getElementById("workTypeInput").value.toLowerCase();
+      const expectedPayment = parseFloat(document.getElementById("expectedPayInput").value);
+      const workingHours = document.getElementById("workingHoursInput").value;
+      const radius = parseFloat(document.getElementById("radius").value);
+
+      if (!radius || isNaN(radius)) {
+        alert("Please enter a valid distance.");
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(position => {
+        const userLat = position.coords.latitude;
+        const userLon = position.coords.longitude;
+
+        const workers = JSON.parse(localStorage.getItem("workerProfiles")) || [];
+
+        const filteredWorkers = workers.filter(worker => {
+          const distance = calculateDistance(userLat, userLon, worker.latitude, worker.longitude);
+          const workerPay = parseFloat(worker.payment.replace(/\D/g, ''));
+          const workerHours = parseFloat(worker.hours);
+          const inputHours = parseFloat(workingHours);
+
+          return (
+            worker.workType.toLowerCase().includes(workType) &&
+            Math.abs(workerPay - expectedPayment) <= 3000 &&
+            !isNaN(workerHours) && !isNaN(inputHours) && Math.abs(workerHours - inputHours) <= 3 &&
+            distance <= radius
+          );
+        });
+
+        const workerList = document.getElementById("workerList");
+        workerList.innerHTML = "";
+
+        if (filteredWorkers.length > 0) {
+          filteredWorkers.forEach(worker => {
+            const card = document.createElement("div");
+            card.className = "worker-card";
+            card.innerHTML = `
+              <p><strong>${worker.name}</strong></p>
+              <p>Work Type: ${worker.workType}</p>
+              <p>Experience: ${worker.experience}</p>
+              <p>Pay: ${worker.payment}</p>
+              <p>Hours: ${worker.hours}</p>
+              <p>Distance: ${calculateDistance(userLat, userLon, worker.latitude, worker.longitude).toFixed(2)} km</p>
+              <button class="hire-button" onclick="hireWorker('${worker.name}')">Hire</button>
+              <button class="not-hire-button" onclick="notHireWorker('${worker.name}')">Not Hire</button>
+            `;
+            workerList.appendChild(card);
+          });
+        } else {
+          workerList.innerHTML = "<p>No workers matched your criteria.</p>";
         }
+      });
+    }
 
-        function populateDropdowns() {
-            const workers = JSON.parse(localStorage.getItem("workerProfiles")) || [];
+    function hireWorker(workerName) {
+      const workers = JSON.parse(localStorage.getItem("workerProfiles")) || [];
+      const worker = workers.find(w => w.name === workerName);
+      if (worker) {
+        const hired = JSON.parse(localStorage.getItem("hiredWorkers")) || [];
+        hired.push(worker);
+        localStorage.setItem("hiredWorkers", JSON.stringify(hired));
+        showNotification(`Notification sent to ${workerName}`);
+        resetPage();
+      }
+    }
 
-            const workTypes = new Set();
-            const hours = new Set();
+    function notHireWorker(workerName) {
+      alert(`${workerName} was not hired.`);
+      resetPage();
+    }
 
-            workers.forEach(worker => {
-                if (worker.workType) workTypes.add(worker.workType);
-                if (worker.hours) hours.add(worker.hours);
-            });
+    function resetPage() {
+      document.getElementById("workTypeInput").value = "";
+      document.getElementById("expectedPayInput").value = "";
+      document.getElementById("workingHoursInput").value = "";
+      document.getElementById("radius").value = "";
+      document.getElementById("workTypeDropdown").value = "";
+      document.getElementById("workingHoursDropdown").value = "";
+      document.getElementById("workerList").innerHTML = "";
+    }
 
-            fillDropdown("workTypeDropdown", [...workTypes]);
-            fillDropdown("workingHoursDropdown", [...hours].sort((a,b)=>a-b));
-        }
+    function showNotification(message) {
+      const notification = document.getElementById("notification");
+      notification.textContent = message;
+      notification.classList.add("show");
+      setTimeout(() => {
+        notification.classList.remove("show");
+      }, 3000);
+    }
 
-        function fillDropdown(id, values) {
-            const dropdown = document.getElementById(id);
-            dropdown.innerHTML = `<option value="">Select from saved</option>`;
-            values.forEach(val => {
-                const option = document.createElement("option");
-                option.value = val;
-                option.textContent = val;
-                dropdown.appendChild(option);
-            });
-        }
-
-        function searchWorkers() {
-            const workType = document.getElementById("workTypeInput").value.toLowerCase();
-            const expectedPayment = parseFloat(document.getElementById("expectedPayInput").value);
-            const workingHours = document.getElementById("workingHoursInput").value;
-            const radius = parseFloat(document.getElementById("radius").value);
-
-            if (!radius || isNaN(radius)) {
-                alert("Please enter a valid distance.");
-                return;
-            }
-
-            navigator.geolocation.getCurrentPosition(position => {
-                const userLat = position.coords.latitude;
-                const userLon = position.coords.longitude;
-
-                const workers = JSON.parse(localStorage.getItem("workerProfiles")) || [];
-
-                const filteredWorkers = workers.filter(worker => {
-                    const distance = calculateDistance(userLat, userLon, worker.latitude, worker.longitude);
-                    const workerPay = parseFloat(worker.payment.replace(/\D/g, ''));
-                    const workerHours = parseFloat(worker.hours);
-                    const inputHours = parseFloat(workingHours);
-
-                    return (
-                        worker.workType.toLowerCase().includes(workType) &&
-                        Math.abs(workerPay - expectedPayment) <= 3000 &&
-                        !isNaN(workerHours) && !isNaN(inputHours) && Math.abs(workerHours - inputHours) <= 3 &&
-                        distance <= radius
-                    );
-                });
-
-                const workerList = document.getElementById("workerList");
-                workerList.innerHTML = "";
-
-                if (filteredWorkers.length > 0) {
-                    filteredWorkers.forEach(worker => {
-                        const card = document.createElement("div");
-                        card.className = "worker-card";
-                        card.innerHTML = `
-                            <p><strong>${worker.name}</strong></p>
-                            <p>Work Type: ${worker.workType}</p>
-                            <p>Experience: ${worker.experience}</p>
-                            <p>Pay: ${worker.payment}</p>
-                            <p>Hours: ${worker.hours}</p>
-                            <p>Distance: ${calculateDistance(userLat, userLon, worker.latitude, worker.longitude).toFixed(2)} km</p>
-                            <button class="hire-button" onclick="hireWorker('${worker.name}')">Hire</button>
-                            <button class="not-hire-button" onclick="notHireWorker('${worker.name}')">Not Hire</button>
-                        `;
-                        workerList.appendChild(card);
-                    });
-                } else {
-                    workerList.innerHTML = "<p>No workers matched your criteria.</p>";
-                }
-            });
-        }
-
-        function hireWorker(workerName) {
-            const workers = JSON.parse(localStorage.getItem("workerProfiles")) || [];
-            const worker = workers.find(w => w.name === workerName);
-            if (worker) {
-                const hired = JSON.parse(localStorage.getItem("hiredWorkers")) || [];
-                hired.push(worker);
-                localStorage.setItem("hiredWorkers", JSON.stringify(hired));
-                alert(`${workerName} has been hired!`);
-            }
-        }
-
-        function notHireWorker(workerName) {
-            alert(`${workerName} was not hired.`);
-        }
-
-        window.onload = populateDropdowns;
-    </script>
+    window.onload = populateDropdowns;
+  </script>
 </body>
 </html>
+
 
 
 
