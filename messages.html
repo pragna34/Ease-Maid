@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Work Messages</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .message { border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 10px; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
+    .name { font-weight: bold; font-size: 1.1rem; }
+    .eta { color: green; margin-top: 5px; }
+    .profile-img { width: 50px; height: 50px; border-radius: 50%; margin-right: 10px; vertical-align: middle; }
+  </style>
+</head>
+<body>
+
+  <h2>📩 Work Updates</h2>
+  <div id="messages-container">Checking status...</div>
+
+  <script>
+    function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+      const R = 6371; // km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a =
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    function estimateETA(distanceKm, speedKmPerHr = 30) {
+      return Math.ceil((distanceKm / speedKmPerHr) * 60); // in minutes
+    }
+
+    function renderMessages(userLat, userLon) {
+      const container = document.getElementById('messages-container');
+      const hiredWorkers = JSON.parse(localStorage.getItem('hiredWorkers')) || [];
+
+      if (hiredWorkers.length === 0) {
+        container.innerHTML = 'No hired workers found.';
+        return;
+      }
+
+      container.innerHTML = '';
+      hiredWorkers.forEach(worker => {
+        const distance = getDistanceFromLatLonInKm(
+          userLat,
+          userLon,
+          parseFloat(worker.latitude),
+          parseFloat(worker.longitude)
+        );
+        const eta = estimateETA(distance);
+
+        container.innerHTML += `
+          <div class="message">
+            <img src="${worker.profilePicture || 'https://via.placeholder.com/50'}" class="profile-img" alt="Profile">
+            <span class="name">${worker.name || 'Worker'}</span> ${
+  worker.accepted ? 'has accepted the work and is going to arrive!' : 'has been hired.'
+}
+
+            <div class="eta">📍 ${distance.toFixed(2)} km away — ⏳ Arriving in ~${eta} mins</div>
+            <div><small>${new Date().toLocaleTimeString()}</small></div>
+          </div>
+        `;
+      });
+    }
+
+    navigator.geolocation.getCurrentPosition(
+  position => {
+    const userLat = position.coords.latitude;
+    const userLon = position.coords.longitude;
+    renderMessages(userLat, userLon);
+  },
+  error => {
+    document.getElementById('messages-container').innerHTML = 'Could not fetch your location.';
+  }
+);
+
+  </script>
+
+</body>
+</html>

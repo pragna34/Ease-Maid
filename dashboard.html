@@ -170,7 +170,8 @@
       <button onclick="location.href='hire.html'">Hire Worker</button>
       <button onclick="location.href='profile.html'">Make a Profile for Work</button>
       <button onclick="location.href='Hiring_status_worker.html'">Hiring Status for Worker</button>
-      <button onclick="toggleHirerHiringStatus()">Hiring Status for Hirer</button>
+      <button onclick="location.href='messages.html'">Hiring Status for Hirer</button>
+
     </div>
   </div>
 
@@ -301,6 +302,9 @@
         chatWindow.classList.add("hidden");
       }
     });
+    document.getElementById('viewMessagesBtn').addEventListener('click', () => {
+    window.location.href = "messages.html";
+  });
   </script>
 </body>
 </html>
