@@ -34,37 +34,36 @@
     }
 
     function renderMessages(userLat, userLon) {
-      const container = document.getElementById('messages-container');
-      const hiredWorkers = JSON.parse(localStorage.getItem('hiredWorkers')) || [];
+  const container = document.getElementById('messages-container');
+  const hiredWorkers = JSON.parse(localStorage.getItem('hiredWorkers')) || [];
 
-      if (hiredWorkers.length === 0) {
-        container.innerHTML = 'No hired workers found.';
-        return;
-      }
+  const acceptedWorkers = hiredWorkers.filter(worker => worker.accepted);
 
-      container.innerHTML = '';
-      hiredWorkers.forEach(worker => {
-        const distance = getDistanceFromLatLonInKm(
-          userLat,
-          userLon,
-          parseFloat(worker.latitude),
-          parseFloat(worker.longitude)
-        );
-        const eta = estimateETA(distance);
+  if (acceptedWorkers.length === 0) {
+    container.innerHTML = 'No accepted workers yet.';
+    return;
+  }
 
-        container.innerHTML += `
-          <div class="message">
-            <img src="${worker.profilePicture || 'https://via.placeholder.com/50'}" class="profile-img" alt="Profile">
-            <span class="name">${worker.name || 'Worker'}</span> ${
-  worker.accepted ? 'has accepted the work and is going to arrive!' : 'has been hired.'
+  const latestWorker = acceptedWorkers[acceptedWorkers.length - 1]; // Get the last accepted
+
+  const distance = getDistanceFromLatLonInKm(
+    userLat,
+    userLon,
+    parseFloat(latestWorker.latitude),
+    parseFloat(latestWorker.longitude)
+  );
+  const eta = estimateETA(distance);
+
+  container.innerHTML = `
+    <div class="message">
+      <img src="${latestWorker.profilePicture || 'https://via.placeholder.com/50'}" class="profile-img" alt="Profile">
+      <span class="name">${latestWorker.name || 'Worker'}</span> has accepted the work and is going to arrive!
+      <div class="eta">📍 ${distance.toFixed(2)} km away — ⏳ Arriving in ~${eta} mins</div>
+      <div><small>${new Date().toLocaleTimeString()}</small></div>
+    </div>
+  `;
 }
 
-            <div class="eta">📍 ${distance.toFixed(2)} km away — ⏳ Arriving in ~${eta} mins</div>
-            <div><small>${new Date().toLocaleTimeString()}</small></div>
-          </div>
-        `;
-      });
-    }
 
     navigator.geolocation.getCurrentPosition(
   position => {
