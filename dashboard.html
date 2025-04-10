@@ -4,136 +4,197 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      display: flex;
+    * {
+      box-sizing: border-box;
     }
+    body {
+  font-family: 'Inter', sans-serif;
+  background: url('https://img.freepik.com/premium-photo/abstract-background-design-images-wallpaper-ai-generated_643360-137347.jpg?w=2000') no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  color: #333;
+  flex-direction: column;
+}
+
+
+
     .sidebar {
-      width: 300px;
-      background-color: white;
-      padding: 20px;
+      width: 100px;
+      padding: 25px 15px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+      background: transparent;
     }
+
+    .profile-container {
+      position: relative;
+    }
+
     .profile-pic {
       width: 120px;
       height: 120px;
       border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid black;
       background: url('https://cdn-icons-png.flaticon.com/512/149/149071.png') no-repeat center;
       background-size: cover;
-      margin-bottom: 10px;
+      border: 1px solid #0c1219;
+      cursor: pointer;
+      margin-left: 40px; /* 👈 This moves it to the right */
+      transition: 0.3s ease;
     }
-    .bio {
-      text-align: center;
-      font-size: 14px;
-      color: #555;
-      margin-bottom: 15px;
+
+    .profile-options {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+      width: 120px;
     }
-    .edit-profile-btn, .logout-btn {
+
+    .profile-options.show {
+      display: flex;
+    }
+
+    .profile-options button {
       padding: 8px;
       font-size: 14px;
-      border: 2px solid black;
-      border-radius: 5px;
-      background-color: white;
-      cursor: pointer;
-      width: 100%;
-      margin-bottom: 15px;
-    }
-    .buttons {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      gap: 10px;
-    }
-    .buttons button {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
+      border: 2px solid #007bff;
+      border-radius: 8px;
+      background-color: #fff;
+      color: #007bff;
       font-weight: bold;
-      border: 2px solid black;
-      border-radius: 5px;
-      background-color: white;
       cursor: pointer;
+      transition: 0.3s ease;
     }
-    .buttons button:hover {
-      background-color: #ddd;
+
+    .profile-options button:hover {
+      background-color: #007bff;
+      color: white;
     }
+
     .main-content {
       flex: 1;
-      padding: 40px;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 200px);
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .dashboard-button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .dashboard-button button {
+      width: 200px;
+      padding: 18px;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .dashboard-button button:hover {
+      background-color: #0056b3;
+    }
+
+    .dashboard-button span {
+      margin-top: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #444;
+    }
+
+    .welcome-text {
+      font-size: 28px;
+      font-weight: 700;
+      color: #444;
+      margin: 30px 0;
+    }
+
+    /* Chatbot */
+    #chatbot-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+    #chat-icon {
+      background: #007bff;
+      color: white;
+      width: 55px;
+      height: 55px;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 24px;
-      font-weight: bold;
-      color: #555;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 28px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
     }
-    #chatbot-container {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 1000;
-    }
-    #chat-icon {
-        background: #007bff;
-        color: white;
-        width: 50px;
-        height: 50px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: 24px;
+    #chat-icon:hover {
+      transform: scale(1.1);
     }
     #chat-window {
-        width: 300px;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        position: absolute;
-        top: 60px;
-        right: 0;
-        display: flex;
-        flex-direction: column;
+      width: 320px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.15);
+      position: absolute;
+      top: 70px;
+      right: 0;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
     }
     #chat-header {
-        background: #007bff;
-        color: white;
-        padding: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-weight: bold;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
+      background: #007bff;
+      color: white;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
     }
     #chat-body {
-        height: 200px;
-        overflow-y: auto;
-        padding: 10px;
+      height: 240px;
+      overflow-y: auto;
+      padding: 10px;
+      font-size: 14px;
     }
     #chat-input {
-        border: none;
-        padding: 10px;
-        width: 100%;
-        border-top: 1px solid #ccc;
+      border: none;
+      padding: 12px;
+      border-top: 1px solid #ddd;
+      font-size: 14px;
+      outline: none;
     }
-    .hidden { display: none; }
 
+    /* Modal */
     .modal {
       display: none;
       position: fixed;
-      z-index: 1;
+      z-index: 1001;
       left: 0;
       top: 0;
       width: 100%;
@@ -142,49 +203,89 @@
     }
     .modal-content {
       background-color: white;
-      margin: 10% auto;
-      padding: 20px;
-      border-radius: 10px;
-      width: 300px;
+      margin: 8% auto;
+      padding: 25px;
+      border-radius: 12px;
+      width: 350px;
       text-align: center;
+      box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    }
+    .modal-content h3 {
+      margin-top: 0;
     }
     .close {
       float: right;
-      font-size: 20px;
+      font-size: 22px;
       cursor: pointer;
     }
     input, textarea {
-      width: 90%;
-      padding: 8px;
-      margin-top: 10px;
+      width: 95%;
+      padding: 10px;
+      margin-top: 12px;
+      border: 1px solid #110d0d;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    textarea {
+      resize: none;
+      height: 70px;
+    }
+    .modal-content button {
+      margin-top: 15px;
+      padding: 10px 16px;
+      background: none;
+      color: rgb(22, 19, 19);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <div class="sidebar">
-    <div class="profile-pic" id="profile-pic"></div>
-    <p class="bio" id="bio-text">No bio added</p>
-    <button class="edit-profile-btn" onclick="openModal()">Edit Profile</button>
-    <button class="logout-btn" onclick="logout()">Logout</button>
-    <div class="buttons">
-      <button onclick="location.href='hire.html'">Hire Worker</button>
-      <button onclick="location.href='profile.html'">Make a Profile for Work</button>
-      <button onclick="location.href='Hiring_status_worker.html'">Hiring Status for Worker</button>
-      <button onclick="location.href='messages.html'">Hiring Status for Hirer</button>
-
+    <div class="profile-container">
+      <div class="profile-pic" onclick="toggleProfileOptions()"></div>
+      <div class="profile-options" id="profile-options">
+        <button onclick="openModal()">Edit Profile</button>
+        <button onclick="logout()">Logout</button>
+      </div>
     </div>
   </div>
 
   <div class="main-content">
-    Welcome to Your Dashboard
+    <div class="dashboard-grid">
+      <div class="dashboard-button">
+        <button onclick="location.href='hire.html'">Hire Worker</button>
+        <span>Find people for your tasks</span>
+      </div>
+      <div class="dashboard-button">
+        <button onclick="location.href='profile.html'">Make a Profile</button>
+        <span>Offer your skills</span>
+      </div>
+    </div>
+
+    <div class="welcome-text">👋 Welcome to Your Dashboard!</div>
+
+    <div class="dashboard-grid">
+      <div class="dashboard-button">
+        <button onclick="location.href='Hiring_status_worker.html'">Worker Status</button>
+        <span>Your hired profiles</span>
+      </div>
+      <div class="dashboard-button">
+        <button onclick="location.href='messages.html'">Hirer Status</button>
+        <span>See who hired you</span>
+      </div>
+    </div>
   </div>
 
+  <!-- Chatbot -->
   <div id="chatbot-container">
     <div id="chat-icon" onclick="toggleChatbot()">💬</div>
-    <div id="chat-window" class="hidden">
-        <div id="chat-header">Chatbot <span onclick="toggleChatbot()">✖</span></div>
-        <div id="chat-body"></div>
-        <input type="text" id="chat-input" placeholder="Ask a question..." onkeypress="handleChat(event)">
+    <div id="chat-window">
+      <div id="chat-header">Chatbot <span onclick="toggleChatbot()">✖</span></div>
+      <div id="chat-body"></div>
+      <input type="text" id="chat-input" placeholder="Ask a question..." onkeypress="handleChat(event)">
     </div>
   </div>
 
@@ -221,18 +322,17 @@
     function saveProfile() {
       let bioText = document.getElementById('bioInput').value;
       localStorage.setItem("userBio", bioText);
-      document.getElementById('bio-text').innerText = bioText ? bioText : "No bio added";
 
       let fileInput = document.getElementById('profileImageInput');
       let urlInput = document.getElementById('imageUrlInput').value;
 
       if (urlInput) {
-        document.getElementById('profile-pic').style.backgroundImage = `url(${urlInput})`;
+        document.querySelector('.profile-pic').style.backgroundImage = `url(${urlInput})`;
         localStorage.setItem("profilePic", urlInput);
       } else if (fileInput.files && fileInput.files[0]) {
         let reader = new FileReader();
         reader.onload = function (e) {
-          document.getElementById('profile-pic').style.backgroundImage = `url(${e.target.result})`;
+          document.querySelector('.profile-pic').style.backgroundImage = `url(${e.target.result})`;
           localStorage.setItem("profilePic", e.target.result);
         };
         reader.readAsDataURL(fileInput.files[0]);
@@ -245,36 +345,14 @@
       let savedBio = localStorage.getItem("userBio");
       let savedProfilePic = localStorage.getItem("profilePic");
 
-      if (savedBio) {
-        document.getElementById('bio-text').innerText = savedBio;
-      }
       if (savedProfilePic) {
-        document.getElementById('profile-pic').style.backgroundImage = `url(${savedProfilePic})`;
+        document.querySelector('.profile-pic').style.backgroundImage = `url(${savedProfilePic})`;
       }
     }
-
-    function toggleHirerHiringStatus() {
-      let currentStatus = localStorage.getItem("hirerHiringStatus") || "Not Hiring";
-      let newStatus = currentStatus === "Hiring" ? "Not Hiring" : "Hiring";
-      localStorage.setItem("hirerHiringStatus", newStatus);
-    }
-
-    const faqResponses = {
-      "how do i hire a worker": "Click on the 'Hire Worker' button on your dashboard...",
-      "how can i create a profile for work": "Click on the 'Make a Profile for Work' button...",
-      "what is the hiring status button for": "There are now separate buttons for worker and hirer hiring status...",
-      "how do i edit my profile information": "Click on 'Edit Profile'...",
-      "how do i log out": "Click the 'Logout' button...",
-      "how do i use the chat feature": "Click the chat icon (💬)...",
-      "can i delete my profile": "Currently, there is no delete option...",
-      "how can i contact customer support": "Use the chatbox...",
-      "what happens after i hire a worker": "Once you hire a worker...",
-      "is this app free to use": "Yes, the app is free..."
-    };
 
     function toggleChatbot() {
-      let chatWindow = document.getElementById("chat-window");
-      chatWindow.classList.toggle("hidden");
+      const chatWindow = document.getElementById("chat-window");
+      chatWindow.style.display = (chatWindow.style.display === "flex") ? "none" : "flex";
     }
 
     function handleChat(event) {
@@ -282,32 +360,42 @@
         let input = document.getElementById("chat-input").value.toLowerCase().trim();
         let chatBody = document.getElementById("chat-body");
 
-        let userMessage = `<p><strong>You:</strong> ${input}</p>`;
-        chatBody.innerHTML += userMessage;
+        if (!input) return;
+
+        chatBody.innerHTML += `<p><strong>You:</strong> ${input}</p>`;
         document.getElementById("chat-input").value = "";
 
-        let response = faqResponses[input] || "I'm sorry, I don't understand that question.";
-        let botMessage = `<p><strong>Bot:</strong> ${response}</p>`;
-        chatBody.innerHTML += botMessage;
+        const faqResponses = {
+          "how do i hire a worker": "Click on the 'Hire Worker' button on your dashboard.",
+          "how can i create a profile for work": "Click on the 'Make a Profile' button.",
+          "what is the hiring status button for": "There are separate buttons for worker and hirer hiring status.",
+          "how do i edit my profile information": "Click on the profile picture and select 'Edit Profile'.",
+          "how do i log out": "Click on the profile picture and select 'Logout'.",
+          "how do i use the chat feature": "Click the chat icon (💬) to start chatting.",
+          "can i delete my profile": "Currently, there is no delete option.",
+          "how can i contact customer support": "Use the chatbot or support email.",
+          "what happens after i hire a worker": "The hired worker appears in your status panel.",
+          "is this app free to use": "Yes, the app is completely free."
+        };
 
+        let response = faqResponses[input] || "I'm sorry, I don't understand that question.";
+        chatBody.innerHTML += `<p><strong>Bot:</strong> ${response}</p>`;
         chatBody.scrollTop = chatBody.scrollHeight;
       }
     }
 
-    document.addEventListener("click", function (event) {
-      const chatbotContainer = document.getElementById("chatbot-container");
-      const chatWindow = document.getElementById("chat-window");
-
-      if (!chatbotContainer.contains(event.target)) {
-        chatWindow.classList.add("hidden");
-      }
-    });
-    document.getElementById('viewMessagesBtn').addEventListener('click', () => {
-    window.location.href = "messages.html";
-  });
+    function toggleProfileOptions() {
+      document.getElementById("profile-options").classList.toggle("show");
+    }
   </script>
 </body>
 </html>
+
+
+
+
+
+
 
 
 
