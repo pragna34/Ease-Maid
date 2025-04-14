@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Microphone Test</title>
+</head>
+<body>
+  <h1>🎤 Voice Test</h1>
+  <button onclick="startListening()">Start Listening</button>
+  <p id="result">Say "help" or "login"...</p>
+
+  <script>
+    const output = document.getElementById("result");
+
+    function startListening() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        output.textContent = "Speech recognition not supported in this browser.";
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = "en-US";
+      recognition.interimResults = false;
+      recognition.continuous = false;
+
+      recognition.onstart = () => {
+        output.textContent = "Listening... Speak now.";
+      };
+
+      recognition.onerror = (e) => {
+        output.textContent = "Error: " + e.error;
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript.toLowerCase();
+        output.textContent = "Heard: " + transcript;
+
+        if (transcript.includes("help")) {
+          window.location.href = "help.html";
+        } else if (transcript.includes("login")) {
+          window.location.href = "login.html";
+        }
+      };
+
+      recognition.start();
+    }
+  </script>
+</body>
+</html>
+

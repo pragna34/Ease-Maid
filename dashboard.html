@@ -10,18 +10,29 @@
       box-sizing: border-box;
     }
     body {
-  font-family: 'Inter', sans-serif;
-  background: url('https://img.freepik.com/premium-photo/abstract-background-design-images-wallpaper-ai-generated_643360-137347.jpg?w=2000') no-repeat center center fixed;
-  background-size: cover;
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  display: flex;
-  color: #333;
-  flex-direction: column;
-}
+      font-family: 'Inter', sans-serif;
+      background: url('https://img.freepik.com/premium-photo/abstract-background-design-images-wallpaper-ai-generated_643360-137347.jpg?w=2000') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      color: #333;
+      flex-direction: column;
+    }
 
-
+    /* Sera's Picture in Bottom Left */
+    #sera-img {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: url('https://your-image-url.com/sera.png') no-repeat center;
+      background-size: cover;
+      cursor: pointer;
+    }
 
     .sidebar {
       width: 100px;
@@ -44,7 +55,7 @@
       background-size: cover;
       border: 1px solid #0c1219;
       cursor: pointer;
-      margin-left: 40px; /* 👈 This moves it to the right */
+      margin-left: 40px;
       transition: 0.3s ease;
     }
 
@@ -301,10 +312,50 @@
     </div>
   </div>
 
+  <!-- Sera's Picture -->
+  <div id="sera-img" onclick="startVoiceInteraction()"></div>
+
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       loadProfile();
+      startVoiceInteraction();
     });
+
+    // Start voice interaction when clicking on Sera's picture
+    function startVoiceInteraction() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      const synthesis = window.speechSynthesis;
+      const voices = synthesis.getVoices();
+      const voice = voices.find(v => v.name === "Microsoft Zira Desktop");
+
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.start();
+
+      recognition.onresult = function(event) {
+        const command = event.results[0][0].transcript.toLowerCase();
+
+        if (command.includes("hire worker")) {
+          location.href = 'hire.html';
+        } else if (command.includes("make a profile")) {
+          location.href = 'profile.html';
+        } else if (command.includes("edit profile")) {
+          openModal();
+        } else {
+          const utterance = new SpeechSynthesisUtterance("Sorry, I didn't understand that command.");
+          utterance.voice = voice;
+          synthesis.speak(utterance);
+        }
+      };
+
+      recognition.onstart = function() {
+        const utterance = new SpeechSynthesisUtterance("Hi, I'm Sera. What would you like to do?");
+        utterance.voice = voice;
+        synthesis.speak(utterance);
+      };
+    }
 
     function logout() {
       alert("You have been logged out.");
@@ -378,18 +429,16 @@
           "is this app free to use": "Yes, the app is completely free."
         };
 
-        let response = faqResponses[input] || "I'm sorry, I don't understand that question.";
+        let response = faqResponses[input] || "Sorry, I didn't understand that. Can you ask something else?";
+
         chatBody.innerHTML += `<p><strong>Bot:</strong> ${response}</p>`;
         chatBody.scrollTop = chatBody.scrollHeight;
       }
     }
-
-    function toggleProfileOptions() {
-      document.getElementById("profile-options").classList.toggle("show");
-    }
   </script>
 </body>
 </html>
+
 
 
 

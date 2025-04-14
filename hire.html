@@ -6,126 +6,229 @@
   <title>Hire a Worker</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      font-family: Arial, sans-serif;
+      background: url('https://www.freeppt7.com/uploads/180929/1-1P92ZSP1Z3.JPG') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
       height: 100vh;
     }
-    .container {
-      width: 40%;
-      background: white;
-      padding: 20px;
-      box-sizing: border-box;
-      text-align: center;
-      border-radius: 10px;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+
+    .page-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      gap: 10px;
       position: relative;
     }
-    .input-group {
-      margin-bottom: 10px;
-      text-align: left;
+
+    .top-left-image {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      border-radius: 12px;
+      position: absolute;
+      top: 30px;
+      left: 250px;
+      z-index: 10;
     }
+
+    .bottom-right-image {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      border-radius: 12px;
+      position: absolute;
+      bottom: 30px;
+      right: 250px;
+      z-index: 10;
+    }
+
+    .content {
+      width: 100%;
+      max-width: 600px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      animation: slideIn 1.3s ease-out;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
     .input-group label {
       display: block;
-      font-weight: bold;
       margin-bottom: 5px;
+      font-weight: bold;
     }
+
     input, select, button {
       width: 100%;
       padding: 10px;
       font-size: 16px;
-      border: 1px solid #ccc;
+      border: none;
       border-radius: 5px;
       box-sizing: border-box;
-      margin-bottom: 5px;
     }
-    button {
-      background-color: #007bff;
-      color: white;
-      cursor: pointer;
-      border: none;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    .worker-list {
-      margin-top: 20px;
-      text-align: left;
-    }
-    .worker-card {
-      padding: 15px;
-      background: white;
-      margin-bottom: 10px;
-      border-radius: 8px;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    }
-    .hire-button {
-      background-color: green;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      margin-right: 8px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .not-hire-button {
-      background-color: red;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .notification {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #28a745;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  z-index: 1000;
-}
-.notification.show {
-  opacity: 1;
-}
 
+    input, select {
+      background: rgba(255, 255, 255, 0.8);
+      color: #000;
+      box-shadow: none !important;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      box-shadow: none !important;
+      outline: none;
+    }
+
+    input:-webkit-autofill {
+      box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.8) inset !important;
+      -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.8) inset !important;
+      -webkit-text-fill-color: #000 !important;
+    }
+
+    button {
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      background: #fff;
+      color: #000;
+    }
+
+    .worker-list {
+      margin-top: 30px;
+    }
+
+    .worker-card {
+      background: rgba(255, 255, 255, 0.9);
+      color: #000;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: flex-start;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .hire-button, .not-hire-button {
+      flex: 1;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 6px;
+      border: none;
+      box-shadow: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .hire-button {
+      background-color: #28a745;
+      color: #fff;
+    }
+
+    .hire-button:hover {
+      background-color: #218838;
+    }
+
+    .not-hire-button {
+      background-color: #dc3545;
+      color: #fff;
+    }
+
+    .not-hire-button:hover {
+      background-color: #c82333;
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #28a745;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: 1000;
+    }
+
+    .notification.show {
+      opacity: 1;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Hire a Worker</h2>
+  <div class="page-container">
+    <!-- Top-left image -->
+    <img src="https://th.bing.com/th/id/OIG4.ZTXT_vamLkNDTXxuOqL0?pid=ImgGn" alt="Top Image" class="top-left-image" />
 
-    <div class="input-group">
-      <label for="workTypeInput">Type of Work</label>
-      <input type="text" id="workTypeInput" placeholder="Type of Work" />
-      <select id="workTypeDropdown" onchange="document.getElementById('workTypeInput').value=this.value"></select>
+    <div class="content">
+      <h2>Hire a Worker</h2>
+
+      <div class="input-group">
+        <label for="workTypeInput">Type of Work</label>
+        <input type="text" id="workTypeInput" placeholder="Type of Work" />
+        <select id="workTypeDropdown" onchange="document.getElementById('workTypeInput').value=this.value">
+          <option>Select from saved</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="expectedPayInput">Expected Payment</label>
+        <input type="number" id="expectedPayInput" placeholder="Expected Payment" />
+      </div>
+
+      <div class="input-group">
+        <label for="workingHoursInput">Working Hours</label>
+        <input type="text" id="workingHoursInput" placeholder="Number of Working Hours" />
+        <select id="workingHoursDropdown" onchange="document.getElementById('workingHoursInput').value=this.value">
+          <option>Select from saved</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <label for="radius">Distance (km)</label>
+        <input type="number" id="radius" placeholder="Enter Distance (km)" />
+      </div>
+
+      <button onclick="searchWorkers()">Search</button>
+
+      <div class="worker-list" id="workerList"></div>
+      <div class="notification" id="notification">Notification sent</div>
     </div>
 
-    <div class="input-group">
-      <label for="expectedPayInput">Expected Payment</label>
-      <input type="number" id="expectedPayInput" placeholder="Expected Payment" />
-    </div>
-
-    <div class="input-group">
-      <label for="workingHoursInput">Working Hours</label>
-      <input type="text" id="workingHoursInput" placeholder="Number of Working Hours" />
-      <select id="workingHoursDropdown" onchange="document.getElementById('workingHoursInput').value=this.value"></select>
-    </div>
-
-    <input type="number" id="radius" placeholder="Enter Distance (km)" />
-    <button onclick="searchWorkers()">Search</button>
-
-    <div class="worker-list" id="workerList"></div>
-
-    <div class="notification" id="notification">Notification sent</div>
+    <!-- Bottom-right image -->
+    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046865.png" alt="Bottom Image" class="bottom-right-image" />
   </div>
 
   <script>
@@ -262,6 +365,11 @@
   </script>
 </body>
 </html>
+
+
+
+
+
 
 
 
