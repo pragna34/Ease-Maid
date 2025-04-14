@@ -6,40 +6,51 @@
     <title>Make a Profile for Work</title>
     <style>
         body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-image: url('https://www.heritagechristiancollege.com/wp-content/uploads/2019/05/pretty-powerpoint-templates-free-of-powerpoint-presentation-slide-background-templates-of-pretty-powerpoint-templates-free.jpg'); /* or use your custom image URL */
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-}
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-image: url('https://www.heritagechristiancollege.com/wp-content/uploads/2019/05/pretty-powerpoint-templates-free-of-powerpoint-presentation-slide-background-templates-of-pretty-powerpoint-templates-free.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
 
         .container {
             max-width: 500px;
             margin: auto;
-            background: white;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
+            background-color: rgba(255, 255, 255, 0.8); /* Slight background transparency */
         }
+
         input, textarea, button {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
-            border: 1px solid #ccc;
             border-radius: 5px;
+            background-color: transparent; /* Makes input field background transparent */
+            color: #333; /* Sets text color */
+            font-size: 16px; /* Ensures consistent font size */
         }
+
+        input, textarea {
+            border: none; /* Removes the border around the inputs and textareas */
+            box-shadow: none; /* Removes shadow that may cause the white box effect */
+        }
+
         button {
             background-color: #28a745;
             color: white;
             cursor: pointer;
             border: none;
         }
+
         button:hover {
             background-color: #218838;
         }
+
         .profile-card {
             background: #fff;
             border: 1px solid #ccc;
@@ -48,15 +59,19 @@
             margin-top: 10px;
             text-align: left;
         }
+
         .edit-btn {
             background-color: #007bff;
         }
+
         .edit-btn:hover {
             background-color: #0056b3;
         }
+
         .delete-btn {
             background-color: #dc3545;
         }
+
         .delete-btn:hover {
             background-color: #c82333;
         }
@@ -66,28 +81,28 @@
     <div class="container">
         <h2>Create Work Profile</h2>
         
-        <label>Name:</label>
+        <label for="name">Name:</label>
         <input type="text" id="name" placeholder="Enter your name">
         
-        <label>Age:</label>
+        <label for="age">Age:</label>
         <input type="number" id="age" placeholder="Enter your age">
 
-        <label>Bio:</label>
+        <label for="bio">Bio:</label>
         <textarea id="bio" placeholder="Enter a short bio"></textarea>
 
-        <label>Kind of Work:</label>
+        <label for="workType">Kind of Work:</label>
         <input type="text" id="workType" placeholder="Enter work type">
 
-        <label>Experience (Optional):</label>
+        <label for="experience">Experience (Optional):</label>
         <input type="text" id="experience" placeholder="Enter your experience">
 
-        <label>Expected Payment:</label>
+        <label for="payment">Expected Payment:</label>
         <input type="text" id="payment" placeholder="Enter expected payment">
 
-        <label>Working Hours:</label>
+        <label for="hours">Working Hours:</label>
         <input type="text" id="hours" placeholder="Enter available hours">
 
-        <label>Location:</label>
+        <label for="location">Location:</label>
         <input type="text" id="location" placeholder="Enter your location">
         <input type="hidden" id="latitude">
         <input type="hidden" id="longitude">
@@ -245,6 +260,8 @@
     </script>
 </body>
 </html>
+
+
 
 
 
