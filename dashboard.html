@@ -10,29 +10,18 @@
       box-sizing: border-box;
     }
     body {
-      font-family: 'Inter', sans-serif;
-      background: url('https://img.freepik.com/premium-photo/abstract-background-design-images-wallpaper-ai-generated_643360-137347.jpg?w=2000') no-repeat center center fixed;
-      background-size: cover;
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      display: flex;
-      color: #333;
-      flex-direction: column;
-    }
+  font-family: 'Inter', sans-serif;
+  background: url('https://img.freepik.com/premium-photo/abstract-background-design-images-wallpaper-ai-generated_643360-137347.jpg?w=2000') no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  color: #333;
+  flex-direction: column;
+}
 
-    /* Sera's Picture in Bottom Left */
-    #sera-img {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: url('https://your-image-url.com/sera.png') no-repeat center;
-      background-size: cover;
-      cursor: pointer;
-    }
+
 
     .sidebar {
       width: 100px;
@@ -55,7 +44,7 @@
       background-size: cover;
       border: 1px solid #0c1219;
       cursor: pointer;
-      margin-left: 40px;
+      margin-left: 40px; /* 👈 This moves it to the right */
       transition: 0.3s ease;
     }
 
@@ -311,134 +300,177 @@
       <button onclick="saveProfile()">Save</button>
     </div>
   </div>
+  <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" 
+     alt="Sera Assistant" 
+     style="position: fixed; bottom: 20px; left: 20px; width: 90px; height: 90px; z-index: 1000; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.2);" />
 
-  <!-- Sera's Picture -->
-  <div id="sera-img" onclick="startVoiceInteraction()"></div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      loadProfile();
-      startVoiceInteraction();
-    });
-
-    // Start voice interaction when clicking on Sera's picture
-    function startVoiceInteraction() {
-      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-      const synthesis = window.speechSynthesis;
-      const voices = synthesis.getVoices();
-      const voice = voices.find(v => v.name === "Microsoft Zira Desktop");
-
-      recognition.lang = 'en-US';
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-
-      recognition.start();
-
-      recognition.onresult = function(event) {
-        const command = event.results[0][0].transcript.toLowerCase();
-
-        if (command.includes("hire worker")) {
-          location.href = 'hire.html';
-        } else if (command.includes("make a profile")) {
-          location.href = 'profile.html';
-        } else if (command.includes("edit profile")) {
-          openModal();
-        } else {
-          const utterance = new SpeechSynthesisUtterance("Sorry, I didn't understand that command.");
-          utterance.voice = voice;
-          synthesis.speak(utterance);
+     <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        loadProfile();
+        startVoiceAssistant();
+      });
+    
+      function logout() {
+        alert("You have been logged out.");
+        window.location.href = "login.html";
+      }
+    
+      function openModal() {
+        document.getElementById('editProfileModal').style.display = 'block';
+      }
+    
+      function closeModal() {
+        document.getElementById('editProfileModal').style.display = 'none';
+      }
+    
+      function saveProfile() {
+        let bioText = document.getElementById('bioInput').value;
+        localStorage.setItem("userBio", bioText);
+    
+        let fileInput = document.getElementById('profileImageInput');
+        let urlInput = document.getElementById('imageUrlInput').value;
+    
+        if (urlInput) {
+          document.querySelector('.profile-pic').style.backgroundImage = `url(${urlInput})`;
+          localStorage.setItem("profilePic", urlInput);
+        } else if (fileInput.files && fileInput.files[0]) {
+          let reader = new FileReader();
+          reader.onload = function (e) {
+            document.querySelector('.profile-pic').style.backgroundImage = `url(${e.target.result})`;
+            localStorage.setItem("profilePic", e.target.result);
+          };
+          reader.readAsDataURL(fileInput.files[0]);
         }
+    
+        closeModal();
+      }
+    
+      function loadProfile() {
+        let savedBio = localStorage.getItem("userBio");
+        let savedProfilePic = localStorage.getItem("profilePic");
+    
+        if (savedProfilePic) {
+          document.querySelector('.profile-pic').style.backgroundImage = `url(${savedProfilePic})`;
+        }
+      }
+    
+      function toggleChatbot() {
+        const chatWindow = document.getElementById("chat-window");
+        chatWindow.style.display = (chatWindow.style.display === "flex") ? "none" : "flex";
+      }
+    
+      function handleChat(event) {
+        if (event.key === "Enter") {
+          let input = document.getElementById("chat-input").value.toLowerCase().trim();
+          let chatBody = document.getElementById("chat-body");
+    
+          if (!input) return;
+    
+          chatBody.innerHTML += `<p><strong>You:</strong> ${input}</p>`;
+          document.getElementById("chat-input").value = "";
+    
+          const faqResponses = {
+            "how do i hire a worker": "Click on the 'Hire Worker' button on your dashboard.",
+            "how can i create a profile for work": "Click on the 'Make a Profile' button.",
+            "what is the hiring status button for": "There are separate buttons for worker and hirer hiring status.",
+            "how do i edit my profile information": "Click on the profile picture and select 'Edit Profile'.",
+            "how do i log out": "Click on the profile picture and select 'Logout'.",
+            "how do i use the chat feature": "Click the chat icon (💬) to start chatting.",
+            "can i delete my profile": "Currently, there is no delete option.",
+            "how can i contact customer support": "Use the chatbot or support email.",
+            "what happens after i hire a worker": "The hired worker appears in your status panel.",
+            "is this app free to use": "Yes, the app is completely free."
+          };
+    
+          let response = faqResponses[input] || "I'm sorry, I don't understand that question.";
+          chatBody.innerHTML += `<p><strong>Bot:</strong> ${response}</p>`;
+          chatBody.scrollTop = chatBody.scrollHeight;
+        }
+      }
+    
+      function toggleProfileOptions() {
+        document.getElementById("profile-options").classList.toggle("show");
+      }
+    
+      // 🧠 SERA - Voice Assistant
+      function startVoiceAssistant() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      console.warn("Speech Recognition not supported.");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+
+    function speak(message) {
+      const utterance = new SpeechSynthesisUtterance(message);
+      const voices = speechSynthesis.getVoices();
+      const zira = voices.find(voice => voice.name.includes("Zira"));
+      if (zira) utterance.voice = zira;
+      speechSynthesis.speak(utterance);
+    }
+
+    recognition.onstart = () => {
+      console.log("Sera is listening...");
+      speak("Hi, I'm Sera. How can I assist you?");
+    };
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+      console.log("Voice Command:", transcript);
+
+      // Natural Language Commands
+      if (transcript.includes("hire") && transcript.includes("worker")) {
+        speak("Sure, taking you to the hire a worker page.");
+        window.location.href = "hire.html";
+      } else if (transcript.includes("make a profile") || transcript.includes("create a profile")) {
+        speak("Okay, let's make your work profile.");
+        window.location.href = "profile.html";
+      } else if (transcript.includes("edit profile")) {
+        speak("Opening your profile editor.");
+        openModal();
+      } else if (transcript.includes("logout")) {
+        speak("Logging you out now.");
+        logout();
+      } else if (transcript.includes("worker status")) {
+        speak("Opening worker status.");
+        window.location.href = "Hiring_status_worker.html";
+      } else if (transcript.includes("hirer status") || transcript.includes("who hired me")) {
+        speak("Showing your hirer status.");
+        window.location.href = "messages.html";
+      } else if (transcript.includes("hello") || transcript.includes("hi")) {
+        speak("Hello! I'm here to help.");
+      } else if (transcript.includes("open chat") || transcript.includes("chatbot")) {
+        speak("Opening the chatbot for you.");
+        toggleChatbot();
+      } else {
+        speak("Sorry, I didn't understand that.");
+      }
+    };
+
+    recognition.onerror = function (event) {
+      console.error("Speech recognition error:", event.error);
+      recognition.stop();
+      setTimeout(() => recognition.start(), 1000); // Auto-restart
+    };
+
+    // Ensure Zira loads before speaking
+    if (speechSynthesis.getVoices().length > 0) {
+      recognition.start();
+    } else {
+      speechSynthesis.onvoiceschanged = () => {
+        recognition.start();
       };
-
-      recognition.onstart = function() {
-        const utterance = new SpeechSynthesisUtterance("Hi, I'm Sera. What would you like to do?");
-        utterance.voice = voice;
-        synthesis.speak(utterance);
-      };
     }
-
-    function logout() {
-      alert("You have been logged out.");
-      window.location.href = "login.html";
-    }
-
-    function openModal() {
-      document.getElementById('editProfileModal').style.display = 'block';
-    }
-
-    function closeModal() {
-      document.getElementById('editProfileModal').style.display = 'none';
-    }
-
-    function saveProfile() {
-      let bioText = document.getElementById('bioInput').value;
-      localStorage.setItem("userBio", bioText);
-
-      let fileInput = document.getElementById('profileImageInput');
-      let urlInput = document.getElementById('imageUrlInput').value;
-
-      if (urlInput) {
-        document.querySelector('.profile-pic').style.backgroundImage = `url(${urlInput})`;
-        localStorage.setItem("profilePic", urlInput);
-      } else if (fileInput.files && fileInput.files[0]) {
-        let reader = new FileReader();
-        reader.onload = function (e) {
-          document.querySelector('.profile-pic').style.backgroundImage = `url(${e.target.result})`;
-          localStorage.setItem("profilePic", e.target.result);
-        };
-        reader.readAsDataURL(fileInput.files[0]);
-      }
-
-      closeModal();
-    }
-
-    function loadProfile() {
-      let savedBio = localStorage.getItem("userBio");
-      let savedProfilePic = localStorage.getItem("profilePic");
-
-      if (savedProfilePic) {
-        document.querySelector('.profile-pic').style.backgroundImage = `url(${savedProfilePic})`;
-      }
-    }
-
-    function toggleChatbot() {
-      const chatWindow = document.getElementById("chat-window");
-      chatWindow.style.display = (chatWindow.style.display === "flex") ? "none" : "flex";
-    }
-
-    function handleChat(event) {
-      if (event.key === "Enter") {
-        let input = document.getElementById("chat-input").value.toLowerCase().trim();
-        let chatBody = document.getElementById("chat-body");
-
-        if (!input) return;
-
-        chatBody.innerHTML += `<p><strong>You:</strong> ${input}</p>`;
-        document.getElementById("chat-input").value = "";
-
-        const faqResponses = {
-          "how do i hire a worker": "Click on the 'Hire Worker' button on your dashboard.",
-          "how can i create a profile for work": "Click on the 'Make a Profile' button.",
-          "what is the hiring status button for": "There are separate buttons for worker and hirer hiring status.",
-          "how do i edit my profile information": "Click on the profile picture and select 'Edit Profile'.",
-          "how do i log out": "Click on the profile picture and select 'Logout'.",
-          "how do i use the chat feature": "Click the chat icon (💬) to start chatting.",
-          "can i delete my profile": "Currently, there is no delete option.",
-          "how can i contact customer support": "Use the chatbot or support email.",
-          "what happens after i hire a worker": "The hired worker appears in your status panel.",
-          "is this app free to use": "Yes, the app is completely free."
-        };
-
-        let response = faqResponses[input] || "Sorry, I didn't understand that. Can you ask something else?";
-
-        chatBody.innerHTML += `<p><strong>Bot:</strong> ${response}</p>`;
-        chatBody.scrollTop = chatBody.scrollHeight;
-      }
-    }
-  </script>
+  }
+    </script>
+    
 </body>
 </html>
-
 
 
 
