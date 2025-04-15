@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Review Hired Workers</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: url('https://www.freeppt7.com/uploads/180929/1-1P92ZSP1Z3.JPG') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      height: 100vh;
+    }
+
+    .page-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      gap: 10px;
+      position: relative;
+    }
+
+    .content {
+      width: 100%;
+      max-width: 600px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      z-index: 2;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .worker-list {
+      margin-top: 30px;
+    }
+
+    .worker-card {
+      background: rgba(255, 255, 255, 0.9);
+      color: #000;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: flex-start;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .save-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #28a745;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+    }
+
+    .save-button:hover {
+      background-color: #218838;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <div class="content">
+      <h2>Rate and Review Hired Workers</h2>
+      
+      <div class="worker-list" id="workerList"></div>
+
+      <!-- Save button to save reviews -->
+      <button class="save-button" onclick="saveReviews()">Save Reviews</button>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function() {
+      displayHiredWorkers();
+    }
+
+    // Function to display the list of hired workers from localStorage
+    function displayHiredWorkers() {
+      const hiredWorkers = JSON.parse(localStorage.getItem("hiredWorkers")) || [];
+      const workerList = document.getElementById("workerList");
+      workerList.innerHTML = ""; // Clear existing list
+
+      if (hiredWorkers.length === 0) {
+        workerList.innerHTML = "<p>No hired workers found.</p>";
+        return;
+      }
+
+      hiredWorkers.forEach((worker, index) => {
+        const workerCard = document.createElement("div");
+        workerCard.className = "worker-card";
+        workerCard.innerHTML = `
+          <h3>${worker.name}</h3>
+          <p>Work: ${worker.workType}</p>
+          <div class="stars">
+            <span>Rate: </span>
+            <span>
+              <input type="radio" name="rating-${index}" value="1"> 1
+              <input type="radio" name="rating-${index}" value="2"> 2
+              <input type="radio" name="rating-${index}" value="3"> 3
+              <input type="radio" name="rating-${index}" value="4"> 4
+              <input type="radio" name="rating-${index}" value="5"> 5
+            </span>
+          </div>
+          <div>
+            <textarea id="review-${index}" placeholder="Write your review here..." rows="3" cols="40"></textarea>
+          </div>
+        `;
+        workerList.appendChild(workerCard);
+      });
+    }
+
+    // Function to save reviews
+    // Function to save reviews
+// Function to save reviews
+function saveReviews() {
+  const hiredWorkers = JSON.parse(localStorage.getItem("hiredWorkers")) || [];
+  const reviews = [];
+
+  hiredWorkers.forEach((worker, index) => {
+    const rating = document.querySelector(`input[name="rating-${index}"]:checked`);
+    const reviewText = document.getElementById(`review-${index}`).value;
+
+    if (rating) {
+      reviews.push({
+        workerName: worker.name,
+        rating: rating.value,
+        review: reviewText,
+      });
+    }
+  });
+
+  if (reviews.length > 0) {
+    alert("Reviews saved successfully!");
+
+    // Optionally: You can save reviews in localStorage if needed
+    localStorage.setItem("workerReviews", JSON.stringify(reviews));
+
+    // Filter and store high-rated workers (4-5 stars)
+    const highRatedWorkers = reviews.filter(r => parseInt(r.rating) >= 4);
+    localStorage.setItem("highRatedWorkers", JSON.stringify(highRatedWorkers));
+  } else {
+    alert("Please rate at least one worker.");
+  }
+}
+
+
+  </script>
+</body>
+</html>
+

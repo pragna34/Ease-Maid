@@ -40,7 +40,7 @@
       width: 120px;
       height: 120px;
       border-radius: 50%;
-      background: url('https://cdn-icons-png.flaticon.com/512/149/149071.png') no-repeat center;
+      background: url('https://th.bing.com/th/id/R.11227f9548eef97e4de838045e32d738?rik=Cdtbxi0nmFYxmA&riu=http%3a%2f%2fwww.pixelstalk.net%2fwp-content%2fuploads%2f2016%2f10%2fDoraemon-wallpaper-for-desktop.jpg&ehk=Wa3aQF%2b4c33lXV4j2W8O1%2bWkeF3hzkTeUJW%2faVBhMYw%3d&risl=&pid=ImgRaw&r=0') no-repeat center;
       background-size: cover;
       border: 1px solid #0c1219;
       cursor: pointer;
@@ -240,6 +240,59 @@
       cursor: pointer;
       font-weight: bold;
     }
+    .reviews-section {
+    margin-top: 40px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .reviews-section h2 {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #444;
+  }
+
+  .reviews-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .review-card {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #f1f1f1;
+    transition: transform 0.3s ease;
+  }
+
+  .review-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .reviewer-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .review-stars {
+    font-size: 16px;
+    color: #FFD700; /* Gold color for stars */
+    margin-top: 5px;
+  }
+
+  .review-text {
+    font-size: 14px;
+    color: #555;
+    margin-top: 10px;
+    line-height: 1.6;
+  }
   </style>
 </head>
 <body>
@@ -264,6 +317,11 @@
         <span>Offer your skills</span>
       </div>
     </div>
+    <!-- New Review System Button -->
+    <div class="dashboard-button">
+      <button onclick="location.href='review.html'">Review System</button>
+      <span>Give and read reviews</span>
+    </div>
 
     <div class="welcome-text">👋 Welcome to Your Dashboard!</div>
 
@@ -277,6 +335,13 @@
         <span>See who hired you</span>
       </div>
     </div>
+    <div class="reviews-section">
+      <h2>Recommending Top Workers</h2>
+      <div class="reviews-list" id="reviews-list">
+        <!-- Reviews will be displayed here -->
+      </div>
+    </div>
+</div>
   </div>
 
   <!-- Chatbot -->
@@ -395,78 +460,147 @@
     
       // 🧠 SERA - Voice Assistant
       function startVoiceAssistant() {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      console.warn("Speech Recognition not supported.");
-      return;
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    alert("Speech Recognition not supported in this browser.");
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = 'en-US';
+
+  let hasGreeted = false;
+  let isRecognizing = false; // 👈 flag to track recognition state
+
+  function speak(message, callback) {
+    console.log("Sera speaking:", message);
+    if (isRecognizing) {
+      recognition.stop(); // 👈 stop before speaking
     }
 
-    const recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = false;
-    recognition.lang = 'en-US';
+    const utterance = new SpeechSynthesisUtterance(message);
+    const voices = speechSynthesis.getVoices();
+    const zira = voices.find(voice => voice.name.toLowerCase().includes("zira"));
+    if (zira) utterance.voice = zira;
 
-    function speak(message) {
-      const utterance = new SpeechSynthesisUtterance(message);
-      const voices = speechSynthesis.getVoices();
-      const zira = voices.find(voice => voice.name.includes("Zira"));
-      if (zira) utterance.voice = zira;
-      speechSynthesis.speak(utterance);
-    }
+    utterance.onend = () => {
+      console.log("Sera finished speaking");
+      if (callback) callback();
 
-    recognition.onstart = () => {
-      console.log("Sera is listening...");
-      speak("Hi, I'm Sera. How can I assist you?");
-    };
-
-    recognition.onresult = (event) => {
-      const transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
-      console.log("Voice Command:", transcript);
-
-      // Natural Language Commands
-      if (transcript.includes("hire") && transcript.includes("worker")) {
-        speak("Sure, taking you to the hire a worker page.");
-        window.location.href = "hire.html";
-      } else if (transcript.includes("make a profile") || transcript.includes("create a profile")) {
-        speak("Okay, let's make your work profile.");
-        window.location.href = "profile.html";
-      } else if (transcript.includes("edit profile")) {
-        speak("Opening your profile editor.");
-        openModal();
-      } else if (transcript.includes("logout")) {
-        speak("Logging you out now.");
-        logout();
-      } else if (transcript.includes("worker status")) {
-        speak("Opening worker status.");
-        window.location.href = "Hiring_status_worker.html";
-      } else if (transcript.includes("hirer status") || transcript.includes("who hired me")) {
-        speak("Showing your hirer status.");
-        window.location.href = "messages.html";
-      } else if (transcript.includes("hello") || transcript.includes("hi")) {
-        speak("Hello! I'm here to help.");
-      } else if (transcript.includes("open chat") || transcript.includes("chatbot")) {
-        speak("Opening the chatbot for you.");
-        toggleChatbot();
-      } else {
-        speak("Sorry, I didn't understand that.");
+      // Only start if not already listening
+      if (!isRecognizing) {
+        recognition.start();
+        isRecognizing = true;
       }
     };
 
-    recognition.onerror = function (event) {
-      console.error("Speech recognition error:", event.error);
-      recognition.stop();
-      setTimeout(() => recognition.start(), 1000); // Auto-restart
-    };
-
-    // Ensure Zira loads before speaking
-    if (speechSynthesis.getVoices().length > 0) {
-      recognition.start();
-    } else {
-      speechSynthesis.onvoiceschanged = () => {
-        recognition.start();
-      };
-    }
+    speechSynthesis.speak(utterance);
   }
+
+  recognition.onstart = () => {
+    isRecognizing = true;
+    console.log("Sera is now listening...");
+  };
+
+  recognition.onend = () => {
+    isRecognizing = false;
+    console.log("Sera stopped listening.");
+  };
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript.toLowerCase().trim();
+    console.log("Heard:", transcript);
+
+    if (transcript.includes("hire") || transcript.includes("higher")) {
+  speak("Opening hire a worker page.", () => window.location.href = "hire.html");
+} else if (transcript.includes("profile")) {
+  speak("Opening your profile page.", () => window.location.href = "profile.html");
+} else if (transcript.includes("edit")) {
+  speak("Editing your profile.", openModal);
+} else if (transcript.includes("logout")) {
+  speak("Logging you out.", logout);
+} else if (transcript.includes("worker status")) {
+  speak("Opening your worker status.", () => window.location.href = "Hiring_status_worker.html");
+} else if (transcript.includes("hirer status") || transcript.includes("who hired")) {
+  speak("Opening your hirer status.", () => window.location.href = "messages.html");
+} else if (transcript.includes("open chatbot") || transcript.includes("open chat")) {
+  speak("Opening the chatbot.", () => {
+    const chatWindow = document.getElementById("chat-window");
+    if (chatWindow) chatWindow.style.display = "flex";
+  });
+} else if (transcript.includes("close chatbot") || transcript.includes("close chat")) {
+  speak("Closing the chatbot.", () => {
+    const chatWindow = document.getElementById("chat-window");
+    if (chatWindow) chatWindow.style.display = "none";
+  });
+} else {
+  speak("Sorry, I didn't get that.");
+}
+
+  };
+
+  recognition.onerror = (event) => {
+    console.warn("Recognition error:", event.error);
+    isRecognizing = false;
+
+    if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+      alert("Microphone access denied. Please allow mic permissions.");
+    } else {
+      setTimeout(() => {
+        if (!isRecognizing) {
+          recognition.start();
+          isRecognizing = true;
+        }
+      }, 1500);
+    }
+  };
+
+  // Initial greeting
+  if (!hasGreeted) {
+    hasGreeted = true;
+    speak("Hi, I'm Sera. How can I assist you?", () => {
+      if (!isRecognizing) {
+        recognition.start();
+        isRecognizing = true;
+      }
+    });
+  }
+}
+window.onload = function() {
+    displayReviews();
+  }
+
+  function displayReviews() {
+    // Fetch high-rated reviews from localStorage
+    const highRatedWorkers = JSON.parse(localStorage.getItem("highRatedWorkers")) || [];
+    
+    // Get the container where reviews will be displayed
+    const reviewsList = document.getElementById("reviews-list");
+    reviewsList.innerHTML = ""; // Clear existing reviews
+
+    if (highRatedWorkers.length === 0) {
+      reviewsList.innerHTML = "<p>No 4 or 5 star reviews found.</p>";
+      return;
+    }
+
+    // Iterate through the reviews and create HTML for each
+    highRatedWorkers.forEach(review => {
+      const reviewCard = document.createElement("div");
+      reviewCard.classList.add("review-card");
+
+      reviewCard.innerHTML = `
+        <div class="reviewer-name">${review.workerName}</div>
+        <div class="review-stars">⭐ ${review.rating} Stars</div>
+        <div class="review-text">${review.review}</div>
+      `;
+
+      reviewsList.appendChild(reviewCard);
+    });
+  }
+
+
     </script>
     
 </body>
